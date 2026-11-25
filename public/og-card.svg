@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <radialGradient id="obsidianGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(885 315) rotate(90) scale(340 340)">
+      <stop offset="0%" stop-color="#1A222D" stop-opacity="0.72" />
+      <stop offset="55%" stop-color="#111114" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#060608" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="subtleTopGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(220 90) rotate(90) scale(360 520)">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.045" />
+      <stop offset="100%" stop-color="#060608" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="hairlineFade" x1="88" y1="520" x2="1112" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.14" />
+      <stop offset="65%" stop-color="#B8C7D9" stop-opacity="0.16" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.03" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#060608" />
+  <rect width="1200" height="630" fill="url(#subtleTopGlow)" />
+  <rect width="1200" height="630" fill="url(#obsidianGlow)" />
+
+  <!-- Architectural Quiet Luxury Hairline Frame -->
+  <rect x="36" y="36" width="1128" height="558" rx="28" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+  <!-- Right Spatial Neural Geometry -->
+  <g opacity="0.95">
+    <circle cx="885" cy="315" r="206" stroke="rgba(255,255,255,0.07)" stroke-width="1" />
+    <circle cx="885" cy="315" r="154" stroke="rgba(184,199,217,0.18)" stroke-width="1" stroke-dasharray="3 7" />
+    <circle cx="885" cy="315" r="102" stroke="rgba(255,255,255,0.09)" stroke-width="1" />
+    <ellipse cx="885" cy="315" rx="206" ry="74" transform="rotate(-24 885 315)" stroke="rgba(184,199,217,0.14)" stroke-width="1" />
+    <ellipse cx="885" cy="315" rx="206" ry="74" transform="rotate(32 885 315)" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+
+    <!-- Synaptic Edges -->
+    <g stroke="#B8C7D9" stroke-opacity="0.28" stroke-width="1.2">
+      <line x1="772" y1="226" x2="885" y2="213" />
+      <line x1="885" y1="213" x2="994" y2="238" />
+      <line x1="772" y1="226" x2="812" y2="334" />
+      <line x1="812" y1="334" x2="885" y2="315" />
+      <line x1="885" y1="213" x2="885" y2="315" />
+      <line x1="994" y1="238" x2="958" y2="344" />
+      <line x1="885" y1="315" x2="958" y2="344" />
+      <line x1="812" y1="334" x2="848" y2="416" />
+      <line x1="885" y1="315" x2="848" y2="416" />
+      <line x1="958" y1="344" x2="988" y2="404" />
+      <line x1="848" y1="416" x2="988" y2="404" />
+      <line x1="734" y1="322" x2="812" y2="334" />
+      <line x1="994" y1="238" x2="1044" y2="310" />
+      <line x1="958" y1="344" x2="1044" y2="310" />
+    </g>
+
+    <!-- Neural Nodes -->
+    <circle cx="885" cy="315" r="7" fill="#B8C7D9" />
+    <circle cx="885" cy="315" r="14" stroke="#B8C7D9" stroke-opacity="0.32" stroke-width="1" />
+    <circle cx="772" cy="226" r="4.5" fill="#F5F5F7" fill-opacity="0.85" />
+    <circle cx="885" cy="213" r="4" fill="#B8C7D9" fill-opacity="0.9" />
+    <circle cx="994" cy="238" r="5" fill="#F5F5F7" fill-opacity="0.9" />
+    <circle cx="812" cy="334" r="4.5" fill="#B8C7D9" fill-opacity="0.85" />
+    <circle cx="958" cy="344" r="4.5" fill="#F5F5F7" fill-opacity="0.9" />
+    <circle cx="848" cy="416" r="4" fill="#F5F5F7" fill-opacity="0.75" />
+    <circle cx="988" cy="404" r="4.5" fill="#B8C7D9" fill-opacity="0.8" />
+    <circle cx="734" cy="322" r="3.5" fill="#8E8E93" />
+    <circle cx="1044" cy="310" r="3.5" fill="#8E8E93" />
+  </g>
+
+  <!-- Left Typography Hierarchy -->
+  <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', system-ui, sans-serif">
+    <text
+      x="88"
+      y="148"
+      fill="#8E8E93"
+      font-size="14"
+      font-weight="500"
+      letter-spacing="3.2"
+    >
+      PORTFOLIO · AI, ML &amp; SYSTEMS
+    </text>
+
+    <text
+      x="86"
+      y="272"
+      fill="#F5F5F7"
+      font-size="96"
+      font-weight="600"
+      letter-spacing="-3"
+    >
+      Unmesh.
+    </text>
+
+    <text
+      x="88"
+      y="334"
+      fill="#B8C7D9"
+      font-size="25"
+      font-weight="500"
+      letter-spacing="-0.4"
+    >
+      B.Tech CS (AI &amp; ML) · Newton School of Technology, Pune
+    </text>
+
+    <text
+      x="88"
+      y="388"
+      fill="#8E8E93"
+      font-size="21"
+      font-weight="400"
+      letter-spacing="-0.2"
+    >
+      Engineering intelligent systems with quiet precision.
+    </text>
+  </g>
+
+  <!-- Footer Hairline & Signature Monogram -->
+  <line x1="88" y1="518" x2="1112" y2="518" stroke="url(#hairlineFade)" stroke-width="1" />
+
+  <g font-family="ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace">
+    <text x="88" y="556" fill="#8E8E93" font-size="14" letter-spacing="1.4">
+      FIRST-YEAR UNDERGRADUATE · PUNE, IN
+    </text>
+    <text x="1112" y="556" text-anchor="end" fill="#B8C7D9" font-size="14" letter-spacing="1.6">
+      UNMESH · AI &amp; ML
+    </text>
+  </g>
+</svg>

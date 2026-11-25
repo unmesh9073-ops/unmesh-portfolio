@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <style>
+    .bg { fill: #060608; stroke: rgba(255, 255, 255, 0.14); }
+    .ring { stroke: rgba(255, 255, 255, 0.1); }
+    .glyph { stroke: #F5F5F7; }
+    .node { fill: #F5F5F7; }
+    .accent { fill: #B8C7D9; }
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #F5F5F7; stroke: rgba(0, 0, 0, 0.12); }
+      .ring { stroke: rgba(0, 0, 0, 0.1); }
+      .glyph { stroke: #1D1D1F; }
+      .node { fill: #1D1D1F; }
+      .accent { fill: #475B70; }
+    }
+  </style>
+  <rect class="bg" x="3" y="3" width="58" height="58" rx="16" stroke-width="1.5" />
+  <circle class="ring" cx="32" cy="32" r="20" stroke-width="1" />
+  <path
+    class="glyph"
+    d="M21.5 21V34.5C21.5 40.299 26.201 45 32 45C37.799 45 42.5 40.299 42.5 34.5V21"
+    stroke-width="4.25"
+    stroke-linecap="round"
+  />
+  <circle class="node" cx="21.5" cy="20.5" r="2.75" />
+  <circle class="node" cx="42.5" cy="20.5" r="2.75" />
+  <circle class="accent" cx="32" cy="31" r="2.5" />
+</svg>

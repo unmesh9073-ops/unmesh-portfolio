@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-theme="dark" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unmesh — B.Tech CS (AI &amp; ML) · Portfolio</title>
+    <meta
+      name="description"
+      content="First-year Computer Science (AI & ML) student at Newton School of Technology, Pune. Exploring machine learning, low-level logic, and tactile software interfaces."
+    />
+    <meta name="theme-color" id="theme-color-meta" content="#060608" />
+    <meta name="theme-color" data-theme-media="dark" content="#060608" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" data-theme-media="light" content="#F5F5F7" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Unmesh — B.Tech CS (AI &amp; ML) · Portfolio" />
+    <meta
+      property="og:description"
+      content="First-year Computer Science (AI & ML) student at Newton School of Technology, Pune. Exploring machine learning, low-level logic, and tactile software interfaces."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-card.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Unmesh — B.Tech CS (AI &amp; ML) · Newton School of Technology, Pune" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Unmesh — B.Tech CS (AI &amp; ML) · Portfolio" />
+    <meta
+      name="twitter:description"
+      content="First-year Computer Science (AI & ML) student at Newton School of Technology, Pune. Exploring machine learning, low-level logic, and tactile software interfaces."
+    />
+    <meta name="twitter:image" content="/og-card.png" />
+
+    <script>
+      (function () {
+        try {
+          var key = 'unmesh-portfolio-theme';
+          var stored = window.localStorage.getItem(key);
+          var theme =
+            stored === 'light' || stored === 'dark'
+              ? stored
+              : window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+                ? 'light'
+                : 'dark';
+          var root = document.documentElement;
+          root.dataset.theme = theme;
+          root.classList.remove('dark', 'light');
+          root.classList.add(theme);
+          root.style.colorScheme = theme;
+
+          var mediaTags = document.querySelectorAll('meta[data-theme-media]');
+          for (var i = 0; i < mediaTags.length; i++) {
+            mediaTags[i].parentNode && mediaTags[i].parentNode.removeChild(mediaTags[i]);
+          }
+          var themeColorMeta = document.getElementById('theme-color-meta');
+          if (themeColorMeta) {
+            themeColorMeta.setAttribute(
+              'content',
+              theme === 'dark' ? '#060608' : '#F5F5F7'
+            );
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

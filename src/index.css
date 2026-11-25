@@ -1,0 +1,250 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, monospace;
+  --ease-productive: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Obsidian Space (Default — Dark Mode) */
+  --bg-canvas: #060608;
+  --bg-surface: #111114;
+  --bg-surface-subtle: #0c0c0f;
+  --glass-bg: rgba(24, 24, 28, 0.62);
+  --glass-blur: blur(24px) saturate(160%);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 12px 40px -16px rgba(0, 0, 0, 0.72);
+  --text-primary: #F5F5F7;
+  --text-secondary: #8E8E93;
+  --border-hairline: rgba(255, 255, 255, 0.10);
+  --border-hairline-hover: rgba(255, 255, 255, 0.20);
+  --whisper-accent: #B8C7D9;
+  --btn-primary-bg: #F5F5F7;
+  --btn-primary-ink: #060608;
+  --scrim-bg: rgba(4, 4, 6, 0.64);
+  --radial-field: rgba(184, 199, 217, 0.075);
+  --radial-ring: rgba(255, 255, 255, 0.08);
+  --specular-sheen: rgba(184, 199, 217, 0.085);
+}
+
+:root[data-theme="light"],
+:root.light {
+  /* Titanium Studio (Light Mode) */
+  --bg-canvas: #F5F5F7;
+  --bg-surface: #FFFFFF;
+  --bg-surface-subtle: #F7F7F9;
+  --glass-bg: rgba(255, 255, 255, 0.68);
+  --glass-blur: blur(24px) saturate(180%);
+  --glass-highlight: rgba(255, 255, 255, 0.85);
+  --glass-shadow: 0 14px 36px -18px rgba(17, 17, 19, 0.18);
+  --text-primary: #111113;
+  --text-secondary: #6E6E73;
+  --border-hairline: rgba(0, 0, 0, 0.08);
+  --border-hairline-hover: rgba(0, 0, 0, 0.16);
+  --whisper-accent: #475B70;
+  --btn-primary-bg: #111113;
+  --btn-primary-ink: #FFFFFF;
+  --scrim-bg: rgba(17, 17, 19, 0.24);
+  --radial-field: rgba(71, 91, 112, 0.085);
+  --radial-ring: rgba(17, 17, 19, 0.075);
+  --specular-sheen: rgba(71, 91, 112, 0.065);
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --color-canvas: var(--bg-canvas);
+  --color-surface: var(--bg-surface);
+  --color-surface-subtle: var(--bg-surface-subtle);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-hairline: var(--border-hairline);
+  --color-hairline-hover: var(--border-hairline-hover);
+  --color-accent: var(--whisper-accent);
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-synthesis: none;
+    scroll-padding-top: 5.5rem;
+    scroll-padding-bottom: 6.5rem;
+  }
+
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [tabindex] {
+    scroll-margin-top: 5.5rem;
+    scroll-margin-bottom: 6.5rem;
+  }
+
+  @media (pointer: fine) {
+    html {
+      overscroll-behavior: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    margin: 0;
+    min-height: 100svh;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    transition:
+      background-color 200ms var(--ease-productive),
+      color 200ms var(--ease-productive);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--whisper-accent) 28%, transparent);
+    color: var(--text-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--whisper-accent);
+    outline-offset: 3px;
+  }
+}
+
+/* Liquid Glass: strictly reserved for floating functional chrome & modals */
+.liquid-glass {
+  --text-secondary: #A1A1A6;
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-hairline);
+  box-shadow:
+    inset 0 1px 0 0 var(--glass-highlight),
+    var(--glass-shadow);
+  transition:
+    background-color 200ms var(--ease-productive),
+    border-color 200ms var(--ease-productive),
+    transform 180ms var(--ease-productive);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .liquid-glass-interactive:hover {
+    border-color: var(--border-hairline-hover);
+  }
+}
+
+/* Content Surfaces: calm, opaque, crisp specular border */
+.quiet-surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  transition:
+    background-color 200ms var(--ease-productive),
+    border-color 200ms var(--ease-productive);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .quiet-surface-interactive:hover {
+    border-color: var(--border-hairline-hover);
+  }
+}
+
+.hairline-divider {
+  border-color: var(--border-hairline);
+  transition: border-color 200ms var(--ease-productive);
+}
+
+.btn-monochrome {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-ink);
+  transition:
+    background-color 200ms var(--ease-productive),
+    color 200ms var(--ease-productive),
+    opacity 180ms var(--ease-productive),
+    transform 180ms var(--ease-productive);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-monochrome:hover {
+    opacity: 0.88;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-glass {
+    background-color: var(--bg-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --border-hairline: rgba(255, 255, 255, 0.28);
+    --border-hairline-hover: rgba(255, 255, 255, 0.48);
+  }
+
+  :root[data-theme="light"],
+  :root.light {
+    --border-hairline: rgba(0, 0, 0, 0.24);
+    --border-hairline-hover: rgba(0, 0, 0, 0.44);
+  }
+
+  .liquid-glass {
+    background-color: var(--bg-surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+:root[data-theme='light'] .liquid-glass {
+  --text-secondary: #59595F;
+}
+
+/* Allow vertical page scrolling over the 3D volume canvas on touchscreens */
+[data-volume-canvas] canvas {
+  touch-action: pan-y !important;
+}
+
+[data-volume-canvas] canvas:focus:not(:focus-visible) {
+  outline: none;
+}
+
+[data-volume-canvas] canvas:focus-visible {
+  outline: 2px solid var(--whisper-accent);
+  outline-offset: -2px;
+}
+
+/* Display typography helpers */
+.display-headline {
+  font-size: clamp(3.35rem, 6.8vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  font-optical-sizing: auto;
+  text-wrap: balance;
+}
+
+.section-heading {
+  font-size: clamp(1.65rem, 2.7vw, 2.25rem);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  font-optical-sizing: auto;
+  text-wrap: balance;
+}
