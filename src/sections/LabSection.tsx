@@ -2,6 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { SpatialCard } from '../components/SpatialCard';
 import { profileConfig } from '../config/profile.config';
 import { useGitHub } from '../context/GitHubContext';
+import { useSpatialWorld } from '../context/useSpatialWorld';
 import { useTheme } from '../context/ThemeContext';
 import { formatRelativeTime, getLanguageDotColor } from '../lib/github';
 
@@ -36,6 +37,7 @@ export function LabSection() {
   const { githubSync } = profileConfig;
   const { labRepos, status, setSelectedRepo, openArchiveWithFilter } = useGitHub();
   const { isDark } = useTheme();
+  const { interactionRef } = useSpatialWorld();
 
   return (
     <section
@@ -104,6 +106,12 @@ export function LabSection() {
               <SpatialCard
                 key={repo.id}
                 onClick={() => setSelectedRepo(repo)}
+                onPointerEnter={() => {
+                  interactionRef.current.hoveredLabIndex = index;
+                }}
+                onPointerLeave={() => {
+                  interactionRef.current.hoveredLabIndex = -1;
+                }}
                 ariaLabel={`Inspect LAB ${labNumber}: ${repo.displayName}`}
                 className="p-6 sm:p-7"
               >

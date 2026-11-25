@@ -12,11 +12,13 @@ import {
   Briefcase,
   Compass,
   Cpu,
+  Crown,
   FlaskConical,
   FolderGit2,
   Layers,
   type LucideIcon,
   Mail,
+  Route,
   Search,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -41,6 +43,7 @@ interface DockEntry {
   tooltip: string;
   icon: LucideIcon;
   kind: 'nav' | 'action';
+  hideOnCompactMobile?: boolean;
   onActivate: () => void;
 }
 
@@ -51,14 +54,12 @@ function DockButton({
   item,
   isActive,
   canMagnify,
-  compactMobile,
   mouseX,
   receded,
 }: {
   item: DockEntry;
   isActive: boolean;
   canMagnify: boolean;
-  compactMobile: boolean;
   mouseX: MotionValue<number>;
   receded: boolean;
 }) {
@@ -94,7 +95,11 @@ function DockButton({
   const Icon = item.icon;
 
   return (
-    <div className="relative flex items-center justify-center">
+    <div
+      className={`relative items-center justify-center ${
+        item.hideOnCompactMobile ? 'hidden sm:flex' : 'flex'
+      }`}
+    >
       <AnimatePresence>
         {showTooltip && !receded ? (
           <motion.span
@@ -129,9 +134,9 @@ function DockButton({
         tabIndex={receded ? -1 : 0}
         aria-label={item.tooltip}
         aria-current={item.kind === 'nav' && isActive ? 'location' : undefined}
-        className={`relative flex h-11 cursor-pointer items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-ink focus-visible:text-ink ${
-          compactMobile ? 'w-10 sm:w-11' : 'w-11'
-        } ${isActive ? 'text-ink' : ''}`}
+        className={`relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-ink focus-visible:text-ink ${
+          isActive ? 'text-ink' : ''
+        }`}
       >
         <motion.span
           style={canMagnify ? { scale, y } : undefined}
@@ -210,6 +215,14 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
         onActivate: () => scrollTo('top'),
       },
       {
+        id: 'sih',
+        label: 'SIH 2026',
+        tooltip: 'SIH 2026 · PS #37',
+        icon: Route,
+        kind: 'nav',
+        onActivate: () => scrollTo('sih'),
+      },
+      {
         id: 'work',
         label: 'Work',
         tooltip: 'Work',
@@ -231,7 +244,16 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
         tooltip: 'Foundations',
         icon: Cpu,
         kind: 'nav',
+        hideOnCompactMobile: true,
         onActivate: () => scrollTo('foundations'),
+      },
+      {
+        id: 'chess',
+        label: 'Chess',
+        tooltip: 'Chess & Tactics',
+        icon: Crown,
+        kind: 'nav',
+        onActivate: () => scrollTo('chess'),
       },
     ];
 
@@ -277,6 +299,7 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
         tooltip: 'Repositories',
         icon: FolderGit2,
         kind: 'action',
+        hideOnCompactMobile: true,
         onActivate: () => openArchiveWithFilter(''),
       },
       {
@@ -387,9 +410,6 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
     };
   }, [navIds]);
 
-  const totalCount = navItems.length + utilityItems.length;
-  const compactMobile = totalCount > 7;
-
   return (
     <div
       className={`fixed inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-40 flex justify-center px-3 ${
@@ -426,7 +446,6 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
               item={item}
               isActive={activeSection === item.id}
               canMagnify={canMagnify}
-              compactMobile={compactMobile}
               mouseX={mouseX}
               receded={receded}
             />
@@ -445,7 +464,6 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
               item={item}
               isActive={false}
               canMagnify={canMagnify}
-              compactMobile={compactMobile}
               mouseX={mouseX}
               receded={receded}
             />

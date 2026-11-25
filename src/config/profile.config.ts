@@ -19,8 +19,18 @@ export interface LinksConfig {
   githubUsername: string;
   githubUrl: string;
   linkedinUrl: string;
+  newtonSchoolHandle: string;
+  newtonSchoolUrl: string;
   email: string;
   resumeUrl: string;
+}
+
+export interface FeaturedCredentialConfig {
+  title: string;
+  subtitle: string;
+  summary: string;
+  postUrl: string;
+  embedUrl: string;
 }
 
 export interface SkillItem {
@@ -89,9 +99,49 @@ export interface GitHubSyncConfig {
   labTopics: string[];
 }
 
+export interface FlagshipProjectConfig {
+  id: string;
+  badge: string;
+  title: string;
+  subtitle: string;
+  summary: string;
+  highlights: {
+    title: string;
+    detail: string;
+  }[];
+  status: string;
+  stack: string[];
+}
+
+export interface ChessPlatformConfig {
+  username: string;
+  profileUrl: string;
+}
+
+export interface ChessConfig {
+  headline: string;
+  bio: string;
+  chessCom: ChessPlatformConfig;
+  lichess: ChessPlatformConfig;
+}
+
+export interface LinkedInConfig {
+  handle: string;
+  profileUrl: string;
+  headline: string;
+  location: string;
+  education: string;
+  openTo: string[];
+  highlights: string[];
+}
+
 export interface ProfileConfig {
   identity: IdentityConfig;
   links: LinksConfig;
+  chess: ChessConfig;
+  linkedin: LinkedInConfig;
+  featuredPost: FeaturedCredentialConfig;
+  flagshipProject: FlagshipProjectConfig;
   skills: SkillTrack[];
   featuredBuilds: ProjectItem[];
   labExperiments: LabItem[];
@@ -104,12 +154,12 @@ export interface ProfileConfig {
 export const profileConfig: ProfileConfig = {
   identity: {
     name: 'Unmesh',
-    role: 'B.Tech CS (AI & ML)',
+    role: 'B.Tech CS (AI & ML) · Quant Researcher',
     institution: 'Newton School of Technology, Pune',
-    status: 'First-Year Undergraduate · Building in AI, ML & Systems',
+    status: 'First-Year Undergraduate · AI/ML, Systems & WorldQuant BRAIN Gold',
     headline: 'Unmesh.',
-    tagline: 'still figuring out',
-    bio: 'First-year Computer Science (AI & ML) student at Newton School of Technology, Pune. Exploring machine learning, low-level logic, and tactile software interfaces.',
+    tagline: 'building at the intersection of AI, systems & alpha.',
+    bio: 'First-year Computer Science (AI & ML) student at Newton School of Technology, Pune, and WorldQuant BRAIN Gold Level Quantitative Researcher. Exploring machine learning, mathematical alpha signals, low-level logic, and tactile software interfaces.',
     location: 'Pune, India',
   },
 
@@ -118,8 +168,84 @@ export const profileConfig: ProfileConfig = {
     githubUsername: 'unmesh9073-ops',
     githubUrl: 'https://github.com/unmesh9073-ops',
     linkedinUrl: 'https://www.linkedin.com/in/unmesh-bhagat-096578271/',
+    newtonSchoolHandle: 'unmesh9073',
+    newtonSchoolUrl: 'https://my.newtonschool.co/user/unmesh9073',
     email: 'unmesh9073@gmail.com',
     resumeUrl: '',
+  },
+
+  chess: {
+    headline: 'Pattern recognition beyond code.',
+    bio: 'Playing rapid and blitz across Chess.com and Lichess to sharpen calculation, endgame precision, and decision-making under time pressure.',
+    chessCom: {
+      // Automatically lowercased for Chess.com PubAPI requests
+      username: 'blank_0000001',
+      profileUrl: 'https://www.chess.com/member/blank_0000001',
+    },
+    lichess: {
+      // Case-insensitive Lichess handle for public API requests
+      username: 'b_l_n_00',
+      profileUrl: 'https://lichess.org/@/b_l_n_00',
+    },
+  },
+
+  linkedin: {
+    handle: 'unmesh-bhagat-096578271',
+    profileUrl: 'https://www.linkedin.com/in/unmesh-bhagat-096578271/',
+    headline:
+      'B.Tech CS (AI & ML) @ Newton School of Technology, Pune · Quant Researcher (WorldQuant BRAIN Gold) · SIH 2026 Builder',
+    location: 'Pune, Maharashtra, India',
+    education: 'Newton School of Technology, Pune · B.Tech Computer Science (AI & ML)',
+    openTo: [
+      'AI & ML Internships',
+      'Quant Research & Alpha Modeling',
+      'Hackathon Collaborations',
+      'Systems Engineering',
+    ],
+    highlights: [
+      'WorldQuant BRAIN — Gold Level Quantitative Researcher (10,000+ Points), designing and validating cross-sectional mathematical alpha signals.',
+      'First-Year B.Tech CS (AI & ML) undergraduate at Newton School of Technology, Pune.',
+      'SIH 2026 Problem Statement #37 — Autonomous Path Planning & Collision Avoidance on Unstructured Indian Roads.',
+    ],
+  },
+
+  featuredPost: {
+    title: 'WorldQuant BRAIN — Gold Level Certificate',
+    subtitle: '10,000+ Points · Quantitative Alpha Research',
+    summary:
+      'Achieved Gold tier on WorldQuant BRAIN by designing, simulating, and validating cross-sectional mathematical alpha signals.',
+    postUrl: 'https://lnkd.in/p/d5XCQ5AZ',
+    embedUrl:
+      'https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7519627535442399232?collapsed=1',
+  },
+
+  flagshipProject: {
+    id: 'sih-2026-ps37',
+    badge: 'Smart India Hackathon 2026 · Problem Statement #37',
+    title: 'Adaptive Path Planning & Collision Avoidance',
+    subtitle: 'Autonomous Vehicles on Unstructured Indian Roads',
+    summary:
+      'Real-time local trajectory planner and dynamic obstacle-avoidance pipeline engineered for unmarked lanes, irregular road edges, and mixed-traffic agents across unstructured Indian road environments.',
+    highlights: [
+      {
+        title: 'Dynamic Obstacle Avoidance',
+        detail: 'Continuous spatial occupancy tracking for moving and static hazards with instant corridor clearance.',
+      },
+      {
+        title: 'Unstructured Road Perception',
+        detail: 'Drivable-surface boundary estimation without relying on crisp lane markings or uniform curbs.',
+      },
+      {
+        title: 'Real-Time Trajectory Re-planning',
+        detail: 'Smooth cubic-spline path synthesis that bends around sudden intrusions while respecting vehicle kinematics.',
+      },
+      {
+        title: 'Edge-Ready Inference',
+        detail: 'Deterministic C++ and Python compute loop tuned for low-latency onboard sensor fusion.',
+      },
+    ],
+    status: 'SIH 2026 · Active Build',
+    stack: ['C++', 'Python', 'Path Planning', 'LiDAR Fusion', 'Spline Control'],
   },
 
   skills: [
@@ -172,6 +298,14 @@ export const profileConfig: ProfileConfig = {
         {
           name: 'Data Structures & Algorithms',
           focus: 'Complexity analysis, recursion, trees, and graph traversal',
+        },
+        {
+          name: 'Quantitative Research',
+          focus: 'Cross-sectional signal hypothesis, backtesting, and factor evaluation on WorldQuant BRAIN',
+        },
+        {
+          name: 'Alpha Modeling',
+          focus: 'Statistical neutrality, turnover control, and mathematical expression synthesis',
         },
       ],
     },

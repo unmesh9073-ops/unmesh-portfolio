@@ -6,6 +6,7 @@ import {
   Compass,
   Copy,
   Cpu,
+  Crown,
   ExternalLink,
   FileText,
   FlaskConical,
@@ -14,6 +15,7 @@ import {
   Mail,
   Moon,
   RefreshCw,
+  Route,
   Search,
   Sun,
   X,
@@ -28,6 +30,7 @@ import {
   useState,
 } from 'react';
 import { profileConfig } from '../config/profile.config';
+import { useChess } from '../context/useChess';
 import { useGitHub } from '../context/GitHubContext';
 import { useTheme } from '../context/ThemeContext';
 import { copyTextToClipboard } from '../lib/clipboard';
@@ -53,6 +56,7 @@ type CommandPayload =
   | { kind: 'theme' }
   | { kind: 'copyEmail' }
   | { kind: 'refresh' }
+  | { kind: 'refreshChess' }
   | { kind: 'external'; url: string };
 
 interface SpotlightCommand {
@@ -104,6 +108,12 @@ function SpotlightDialogContent({
     refresh,
   } = useGitHub();
   const { isDark, toggleTheme } = useTheme();
+  const {
+    chessCom,
+    lichess,
+    topOverallRating,
+    refresh: refreshChess,
+  } = useChess();
   const shouldReduceMotion = useReducedMotion();
 
   const [query, setQuery] = useState('');
@@ -206,6 +216,15 @@ function SpotlightDialogContent({
         payload: { kind: 'nav', sectionId: 'top' },
       },
       {
+        id: 'spotlight-nav-sih',
+        group: 'navigate',
+        title: 'SIH 2026 Flagship',
+        subtitle: 'Adaptive Path Planning & Collision Avoidance',
+        icon: <Route className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'sih 2026 problem statement 37 autonomous vehicle path planning collision avoidance',
+        payload: { kind: 'nav', sectionId: 'sih' },
+      },
+      {
         id: 'spotlight-nav-work',
         group: 'navigate',
         title: 'Selected Work',
@@ -231,6 +250,17 @@ function SpotlightDialogContent({
         icon: <Cpu className="h-4 w-4 text-muted" aria-hidden="true" />,
         keywords: 'foundations stack skills python cpp html css javascript',
         payload: { kind: 'nav', sectionId: 'foundations' },
+      },
+      {
+        id: 'spotlight-nav-chess',
+        group: 'navigate',
+        title: 'Chess & Tactics',
+        subtitle: topOverallRating
+          ? `${topOverallRating.platform === 'chesscom' ? 'Chess.com' : 'Lichess'} · ${topOverallRating.label} ${topOverallRating.rating}`
+          : 'Chess.com & Lichess · 3D Board',
+        icon: <Crown className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'chess lichess tactics rapid blitz puzzle rating hobby',
+        payload: { kind: 'nav', sectionId: 'chess' },
       },
     ];
 
@@ -275,7 +305,7 @@ function SpotlightDialogContent({
         (item.subtitle?.toLowerCase().includes(normalizedQuery) ?? false) ||
         (item.keywords?.toLowerCase().includes(normalizedQuery) ?? false),
     );
-  }, [normalizedQuery]);
+  }, [normalizedQuery, topOverallRating]);
 
   const actionCommands = useMemo<SpotlightCommand[]>(() => {
     const actions: SpotlightCommand[] = [
@@ -325,6 +355,36 @@ function SpotlightDialogContent({
         payload: { kind: 'refresh' },
       },
       {
+        id: 'spotlight-act-refresh-chess',
+        group: 'actions',
+        title: 'Refresh Chess Stats',
+        subtitle:
+          chessCom.status === 'live' || lichess.status === 'live'
+            ? 'Sync Chess.com & Lichess ratings'
+            : 'Re-check Chess.com & Lichess profiles',
+        icon: <RefreshCw className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'refresh sync reload chess lichess stats ratings',
+        payload: { kind: 'refreshChess' },
+      },
+      {
+        id: 'spotlight-act-chesscom',
+        group: 'actions',
+        title: 'Open Chess.com Profile',
+        subtitle: chessCom.profileUrl.replace('https://', ''),
+        icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'chess.com profile external link',
+        payload: { kind: 'external', url: chessCom.profileUrl },
+      },
+      {
+        id: 'spotlight-act-lichess',
+        group: 'actions',
+        title: 'Open Lichess Profile',
+        subtitle: lichess.profileUrl.replace('https://', ''),
+        icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'lichess profile external link',
+        payload: { kind: 'external', url: lichess.profileUrl },
+      },
+      {
         id: 'spotlight-act-github',
         group: 'actions',
         title: 'Open GitHub Profile',
@@ -341,6 +401,24 @@ function SpotlightDialogContent({
         icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
         keywords: 'linkedin profile external link',
         payload: { kind: 'external', url: profileConfig.links.linkedinUrl },
+      },
+      {
+        id: 'spotlight-act-worldquant',
+        group: 'actions',
+        title: 'WorldQuant BRAIN Gold Post',
+        subtitle: profileConfig.featuredPost.subtitle,
+        icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'worldquant brain gold certificate quant researcher linkedin post',
+        payload: { kind: 'external', url: profileConfig.featuredPost.postUrl },
+      },
+      {
+        id: 'spotlight-act-newton',
+        group: 'actions',
+        title: 'Open Newton School Profile',
+        subtitle: profileConfig.links.newtonSchoolUrl.replace('https://', ''),
+        icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'newton school of technology college profile unmesh9073',
+        payload: { kind: 'external', url: profileConfig.links.newtonSchoolUrl },
       },
     ];
 
@@ -366,7 +444,7 @@ function SpotlightDialogContent({
         (item.subtitle?.toLowerCase().includes(normalizedQuery) ?? false) ||
         (item.keywords?.toLowerCase().includes(normalizedQuery) ?? false),
     );
-  }, [allRepos.length, isDark, status, normalizedQuery]);
+  }, [allRepos.length, isDark, status, normalizedQuery, chessCom.status, chessCom.profileUrl, lichess.status, lichess.profileUrl]);
 
   const sections = useMemo(
     () =>
@@ -452,6 +530,12 @@ function SpotlightDialogContent({
             );
           });
           break;
+        case 'refreshChess':
+          closeModal(false);
+          void refreshChess().then(() => {
+            onShowToast('Chess.com stats refreshed');
+          });
+          break;
         case 'external':
           closeModal(false);
           window.open(payload.url, '_blank', 'noopener,noreferrer');
@@ -466,6 +550,7 @@ function SpotlightDialogContent({
       toggleTheme,
       onShowToast,
       refresh,
+      refreshChess,
       status,
     ],
   );

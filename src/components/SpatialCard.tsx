@@ -17,6 +17,8 @@ export interface SpatialCardProps {
   children: ReactNode;
   className?: string;
   onClick?: () => void;
+  onPointerEnter?: () => void;
+  onPointerLeave?: () => void;
   ariaLabel?: string;
 }
 
@@ -30,6 +32,8 @@ export function SpatialCard({
   children,
   className = '',
   onClick,
+  onPointerEnter,
+  onPointerLeave,
   ariaLabel,
 }: SpatialCardProps) {
   const cardRef = useRef<HTMLElement>(null);
@@ -93,6 +97,7 @@ export function SpatialCard({
   const handlePointerLeave = () => {
     rawRotateX.set(0);
     rawRotateY.set(0);
+    onPointerLeave?.();
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
@@ -114,6 +119,7 @@ export function SpatialCard({
       aria-label={ariaLabel}
       onClick={onClick}
       onKeyDown={handleKeyDown}
+      onPointerEnter={onPointerEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       whileTap={isInteractive && !shouldReduceMotion ? { scale: 0.985 } : undefined}

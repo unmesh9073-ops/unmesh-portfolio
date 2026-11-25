@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight, FolderGit2, Globe, Star } from 'lucide-react';
 import { SpatialCard } from '../components/SpatialCard';
 import { useGitHub } from '../context/GitHubContext';
+import { useSpatialWorld } from '../context/useSpatialWorld';
 import { useTheme } from '../context/ThemeContext';
 import { formatRelativeTime, getLanguageDotColor } from '../lib/github';
 import { productiveFastTransition, tapFeedback } from '../lib/motion';
@@ -61,6 +62,7 @@ export function WorkSection() {
     openArchiveWithFilter,
   } = useGitHub();
   const { isDark } = useTheme();
+  const { interactionRef } = useSpatialWorld();
 
   const statusLabel =
     status === 'live'
@@ -127,6 +129,12 @@ export function WorkSection() {
               <SpatialCard
                 key={repo.id}
                 onClick={() => setSelectedRepo(repo)}
+                onPointerEnter={() => {
+                  interactionRef.current.hoveredWorkIndex = index;
+                }}
+                onPointerLeave={() => {
+                  interactionRef.current.hoveredWorkIndex = -1;
+                }}
                 ariaLabel={`Inspect ${repo.displayName} repository details`}
                 className={`p-6 sm:p-7 ${isLead ? 'md:col-span-2' : ''}`}
               >

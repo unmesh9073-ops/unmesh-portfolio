@@ -4,6 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import type { ThemeMode } from '../../config/profile.config';
+import { DARK_TARGETS, LIGHT_TARGETS } from './themeTargets';
 import type { NeuralVolumeMode, PulseSignal } from './types';
 
 export interface NeuralVolumeCanvasProps {
@@ -16,42 +17,6 @@ export interface NeuralVolumeCanvasProps {
   onPulseOrigin?: (origin: [number, number, number]) => void;
   onContextLost?: () => void;
 }
-
-interface ThemeTargets {
-  nodePrimary: THREE.Color;
-  nodeSecondary: THREE.Color;
-  edgeBase: THREE.Color;
-  pulseAccent: THREE.Color;
-  pulseCore: THREE.Color;
-  tensorCore: THREE.Color;
-  tensorWire: THREE.Color;
-  edgeRestAlpha: number;
-  latentAlpha: number;
-}
-
-const DARK_TARGETS: ThemeTargets = {
-  nodePrimary: new THREE.Color('#E5E7EB'),
-  nodeSecondary: new THREE.Color('#8E8E93'),
-  edgeBase: new THREE.Color('#CBD5E1'),
-  pulseAccent: new THREE.Color('#B8C7D9'),
-  pulseCore: new THREE.Color('#FFFFFF'),
-  tensorCore: new THREE.Color('#272C35'),
-  tensorWire: new THREE.Color('#D1D8E2'),
-  edgeRestAlpha: 0.22,
-  latentAlpha: 0.78,
-};
-
-const LIGHT_TARGETS: ThemeTargets = {
-  nodePrimary: new THREE.Color('#1D1D20'),
-  nodeSecondary: new THREE.Color('#52525B'),
-  edgeBase: new THREE.Color('#27272A'),
-  pulseAccent: new THREE.Color('#475B70'),
-  pulseCore: new THREE.Color('#111113'),
-  tensorCore: new THREE.Color('#CBD5E1'),
-  tensorWire: new THREE.Color('#27272A'),
-  edgeRestAlpha: 0.19,
-  latentAlpha: 0.76,
-};
 
 function mulberry32(seed: number): () => number {
   let state = seed >>> 0;
@@ -76,7 +41,7 @@ interface PaletteState {
   latentAlpha: number;
 }
 
-interface SharedSceneRef {
+export interface SharedSceneRef {
   elapsed: number;
   pointerLocal: THREE.Vector3;
   pointerInside: boolean;
@@ -371,7 +336,7 @@ function buildSynapseTopology() {
   };
 }
 
-function SynapseVolume({ shared }: { shared: React.RefObject<SharedSceneRef> }) {
+export function SynapseVolume({ shared }: { shared: React.RefObject<SharedSceneRef> }) {
   const groupRef = useRef<THREE.Group>(null);
   const pointsRef = useRef<THREE.Points>(null);
   const linesRef = useRef<THREE.LineSegments>(null);
@@ -588,7 +553,7 @@ function SynapseVolume({ shared }: { shared: React.RefObject<SharedSceneRef> }) 
 // Mode 2: Latent (1,200 GPU embedding particles)
 // ---------------------------------------------------------------------------
 
-function LatentVolume({ shared }: { shared: React.RefObject<SharedSceneRef> }) {
+export function LatentVolume({ shared }: { shared: React.RefObject<SharedSceneRef> }) {
   const groupRef = useRef<THREE.Group>(null);
   const matRef = useRef<THREE.ShaderMaterial>(null);
   const pointerActiveSmooth = useRef(0);
@@ -719,7 +684,7 @@ const ORBIT_TILT_ANGLES: ReadonlyArray<[number, number, number]> = [
 
 const ORBIT_RADII = [1.18, 1.32, 1.46] as const;
 
-function TensorVolume({ shared }: { shared: React.RefObject<SharedSceneRef> }) {
+export function TensorVolume({ shared }: { shared: React.RefObject<SharedSceneRef> }) {
   const groupRef = useRef<THREE.Group>(null);
   const outerShellRef = useRef<THREE.LineSegments>(null);
   const midShellRef = useRef<THREE.LineSegments>(null);

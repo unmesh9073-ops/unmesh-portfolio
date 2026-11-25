@@ -4,17 +4,22 @@ import { AllReposModal } from './components/AllReposModal';
 import { FloatingDock } from './components/FloatingDock';
 import { LiquidGlassToast } from './components/LiquidGlassToast';
 import { ProjectDetailSheet } from './components/ProjectDetailSheet';
+import { SpatialWorldStage } from './components/SpatialWorldStage';
 import { SpotlightModal } from './components/SpotlightModal';
 import { TopBar } from './components/TopBar';
+import { ChessProvider } from './context/ChessContext';
 import { GitHubProvider, useGitHub } from './context/GitHubContext';
+import { SpatialWorldProvider } from './context/SpatialWorldContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ensureFocusVisibleClearance } from './lib/focusClearance';
+import { ChessSection } from './sections/ChessSection';
 import { ContactFooter } from './sections/ContactFooter';
 import { ExperienceSection } from './sections/ExperienceSection';
 import { FoundationsSection } from './sections/FoundationsSection';
 import { Hero } from './sections/Hero';
 import { LabSection } from './sections/LabSection';
 import { NotesSection } from './sections/NotesSection';
+import { SihFlagshipSection } from './sections/SihFlagshipSection';
 import { WorkSection } from './sections/WorkSection';
 
 function PortfolioShell() {
@@ -85,9 +90,11 @@ function PortfolioShell() {
 
   return (
     <div
-      className="min-h-svh bg-canvas text-ink"
+      className="relative min-h-svh bg-canvas text-ink"
       onFocusCapture={(event) => ensureFocusVisibleClearance(event.target)}
     >
+      <SpatialWorldStage />
+
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 liquid-glass rounded-full px-4 py-2 text-sm font-medium text-ink"
@@ -97,16 +104,20 @@ function PortfolioShell() {
 
       <TopBar onOpenSpotlight={openSpotlight} />
 
-      <main id="main-content" tabIndex={-1} className="focus:outline-none">
+      <main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">
         <Hero />
+        <SihFlagshipSection />
         <WorkSection />
         <LabSection />
         <FoundationsSection />
+        <ChessSection />
         <ExperienceSection />
         <NotesSection />
       </main>
 
-      <ContactFooter onCopyEmail={handleCopyEmail} />
+      <div className="relative z-10">
+        <ContactFooter onCopyEmail={handleCopyEmail} />
+      </div>
 
       <FloatingDock onOpenSpotlight={openSpotlight} receded={isAnyOverlayOpen} />
 
@@ -129,7 +140,11 @@ export function App() {
     <MotionConfig reducedMotion="user">
       <ThemeProvider>
         <GitHubProvider>
-          <PortfolioShell />
+          <ChessProvider>
+            <SpatialWorldProvider>
+              <PortfolioShell />
+            </SpatialWorldProvider>
+          </ChessProvider>
         </GitHubProvider>
       </ThemeProvider>
     </MotionConfig>
