@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowUpRight,
   Award,
@@ -17,11 +17,7 @@ import { profileConfig } from '../config/profile.config';
 import { useChess } from '../context/useChess';
 import { useSpatialWorld } from '../context/useSpatialWorld';
 import { copyTextToClipboard } from '../lib/clipboard';
-import {
-  PRODUCTIVE_EASE,
-  productiveFastTransition,
-  tapFeedback,
-} from '../lib/motion';
+import { productiveFastTransition, tapFeedback } from '../lib/motion';
 
 function GitHubGlyph({ className = '' }: { className?: string }) {
   return (
@@ -68,15 +64,24 @@ export function ContactFooter({ onCopyEmail }: ContactFooterProps) {
   const { identity, links, linkedin, featuredPost, modules } = profileConfig;
   const { chessCom, lichess } = useChess();
   const { interactionRef } = useSpatialWorld();
-  const shouldReduceMotion = useReducedMotion();
-
   const [copied, setCopied] = useState(false);
-  const [postPreviewOpen, setPostPreviewOpen] = useState(false);
+  const [postModalOpen, setPostModalOpen] = useState(false);
   const resetTimerRef = useRef<number | null>(null);
 
   const showResumeAction = modules.showResume && links.resumeUrl.trim().length > 0;
-  const hasEmbedUrl = featuredPost.embedUrl.trim().length > 0;
-  const postHref = featuredPost.postUrl.trim() || links.linkedinUrl;
+  const hasEmbed = featuredPost.embedUrl.trim().length > 0;
+  const postTargetUrl = featuredPost.postUrl.trim() || links.linkedinUrl;
+
+  useEffect(() => {
+    if (!postModalOpen) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setPostModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [postModalOpen]);
 
   useEffect(() => {
     return () => {
@@ -85,24 +90,6 @@ export function ContactFooter({ onCopyEmail }: ContactFooterProps) {
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (!postPreviewOpen) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setPostPreviewOpen(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [postPreviewOpen]);
 
   const handleCopyEmail = async () => {
     const ok = await copyTextToClipboard(links.email);
@@ -124,7 +111,7 @@ export function ContactFooter({ onCopyEmail }: ContactFooterProps) {
       aria-labelledby="contact-heading"
       className="mx-auto w-full max-w-[1120px] scroll-mt-24 px-6 pt-12 pb-32 sm:px-8 lg:px-10"
     >
-      <div className="hairline-divider space-y-5 border-t pt-14">
+      <div className="hairline-divider border-t pt-14">
         {/* Spatial LinkedIn Identity Hub */}
         <SpatialCard
           onPointerEnter={() => {
@@ -291,8 +278,58 @@ export function ContactFooter({ onCopyEmail }: ContactFooterProps) {
               </div>
             </div>
 
-            {/* Right Column: 3 Concise Proof-Point Highlights */}
-            <div className="lg:col-span-5">
+            {/* Right Column: WorldQuant BRAIN Gold Showcase + Profile Highlights */}
+            <div className="space-y-4 lg:col-span-5">
+              {/* WorldQuant BRAIN Gold Certificate Card */}
+              <div className="rounded-2xl border border-[var(--border-hairline)] bg-[var(--bg-surface-subtle)] p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.04em] text-accent">
+                    <Award className="h-3.5 w-3.5" aria-hidden="true" />
+                    <span>Credential · WorldQuant BRAIN</span>
+                  </span>
+                  <span className="rounded-full border border-[var(--border-hairline)] px-2.5 py-0.5 font-mono text-[10px] text-ink">
+                    Gold Tier
+                  </span>
+                </div>
+
+                <h3 className="mt-3 text-base font-semibold tracking-[-0.015em] text-ink">
+                  {featuredPost.title}
+                </h3>
+                <p className="mt-1 font-mono text-[11px] text-muted">
+                  {featuredPost.subtitle}
+                </p>
+                <p className="mt-2.5 text-[13px] leading-relaxed text-muted">
+                  {featuredPost.summary}
+                </p>
+
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  {hasEmbed ? (
+                    <motion.button
+                      type="button"
+                      onClick={() => setPostModalOpen(true)}
+                      whileTap={tapFeedback}
+                      transition={productiveFastTransition}
+                      className="btn-monochrome inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full px-3.5 text-xs font-medium"
+                    >
+                      <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+                      <span>Preview LinkedIn Post</span>
+                    </motion.button>
+                  ) : null}
+
+                  <motion.a
+                    href={postTargetUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileTap={tapFeedback}
+                    transition={productiveFastTransition}
+                    className="quiet-surface quiet-surface-interactive inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 text-xs font-medium text-ink"
+                  >
+                    <span>Open on LinkedIn</span>
+                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </motion.a>
+                </div>
+              </div>
+
               <div className="rounded-2xl border border-[var(--border-hairline)] bg-[var(--bg-surface-subtle)] p-5 sm:p-6">
                 <h3 className="font-mono text-[11px] uppercase tracking-[0.05em] text-muted">
                   Profile Highlights
@@ -312,113 +349,46 @@ export function ContactFooter({ onCopyEmail }: ContactFooterProps) {
             </div>
           </div>
         </SpatialCard>
-
-        {/* Quant Researcher · WorldQuant BRAIN Gold Credential Card */}
-        <SpatialCard
-          onPointerEnter={() => {
-            interactionRef.current.hoveredContactHub = true;
-          }}
-          onPointerLeave={() => {
-            interactionRef.current.hoveredContactHub = false;
-          }}
-          className="rounded-3xl p-6 sm:p-7"
-        >
-          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
-            <div className="max-w-[62ch]">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[color-mix(in_srgb,#D6C29F_35%,var(--border-hairline))] bg-[color-mix(in_srgb,#D6C29F_8%,var(--bg-surface-subtle))] px-3 py-1 font-mono text-[11px] text-ink">
-                  <Award className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
-                  <span>Quant Researcher · {featuredPost.subtitle}</span>
-                </span>
-              </div>
-
-              <h3 className="mt-3.5 text-lg font-semibold tracking-[-0.015em] text-ink sm:text-xl">
-                {featuredPost.title}
-              </h3>
-
-              <p className="mt-2 text-[15px] leading-[1.6] text-muted">
-                {featuredPost.summary}
-              </p>
-            </div>
-
-            <div className="flex shrink-0 flex-wrap items-center gap-2.5">
-              {hasEmbedUrl ? (
-                <motion.button
-                  type="button"
-                  onClick={() => setPostPreviewOpen(true)}
-                  whileTap={tapFeedback}
-                  transition={productiveFastTransition}
-                  className="btn-monochrome inline-flex h-10 cursor-pointer items-center gap-2 rounded-full px-4 text-xs font-medium sm:text-sm"
-                >
-                  <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span>Preview LinkedIn Post</span>
-                </motion.button>
-              ) : null}
-
-              <motion.a
-                href={postHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileTap={tapFeedback}
-                transition={productiveFastTransition}
-                className="quiet-surface quiet-surface-interactive inline-flex h-10 items-center gap-2 rounded-full px-4 text-xs font-medium text-ink sm:text-sm"
-              >
-                <LinkedInGlyph className="h-3.5 w-3.5 text-muted" />
-                <span>Open on LinkedIn</span>
-                <ArrowUpRight className="h-3.5 w-3.5 text-muted" aria-hidden="true" />
-              </motion.a>
-            </div>
-          </div>
-        </SpatialCard>
       </div>
 
       {/* Liquid Glass LinkedIn Post Preview Modal */}
       <AnimatePresence>
-        {postPreviewOpen && hasEmbedUrl ? (
+        {postModalOpen && hasEmbed ? (
           <motion.div
-            key="linkedin-post-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: shouldReduceMotion ? 0.08 : 0.18, ease: PRODUCTIVE_EASE }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim-bg)] p-4 backdrop-blur-sm"
+            transition={productiveFastTransition}
             role="dialog"
             aria-modal="true"
             aria-labelledby="linkedin-post-modal-title"
-            onClick={() => setPostPreviewOpen(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--scrim-bg)] p-4 backdrop-blur-sm"
+            onClick={() => setPostModalOpen(false)}
           >
             <motion.div
-              initial={
-                shouldReduceMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, transform: 'scale(0.96) translateY(8px)' }
-              }
+              initial={{ opacity: 0, transform: 'scale(0.96) translateY(8px)' }}
               animate={{ opacity: 1, transform: 'scale(1) translateY(0px)' }}
-              exit={
-                shouldReduceMotion
-                  ? { opacity: 0 }
-                  : { opacity: 0, transform: 'scale(0.97) translateY(6px)' }
-              }
-              transition={{ duration: 0.2, ease: PRODUCTIVE_EASE }}
+              exit={{ opacity: 0, transform: 'scale(0.97) translateY(4px)' }}
+              transition={productiveFastTransition}
               onClick={(e) => e.stopPropagation()}
               className="liquid-glass w-full max-w-[580px] rounded-3xl p-5 sm:p-6"
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center justify-between gap-3 pb-4">
                 <div>
-                  <p className="font-mono text-[11px] text-accent">
-                    {featuredPost.subtitle}
-                  </p>
                   <h3
                     id="linkedin-post-modal-title"
-                    className="mt-1 text-base font-semibold tracking-[-0.015em] text-ink"
+                    className="text-sm font-semibold text-ink"
                   >
                     {featuredPost.title}
                   </h3>
+                  <p className="mt-0.5 font-mono text-[11px] text-muted">
+                    {featuredPost.subtitle}
+                  </p>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => setPostPreviewOpen(false)}
+                  onClick={() => setPostModalOpen(false)}
                   aria-label="Close LinkedIn post preview"
                   className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[var(--border-hairline)] text-muted transition-colors duration-150 hover:border-[var(--border-hairline-hover)] hover:text-ink"
                 >
@@ -426,15 +396,13 @@ export function ContactFooter({ onCopyEmail }: ContactFooterProps) {
                 </button>
               </div>
 
-              <div className="mx-auto mt-4 w-full max-w-[540px] overflow-hidden rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)]">
+              <div className="mx-auto w-full max-w-[540px] overflow-hidden rounded-xl border border-[var(--border-hairline)] bg-[var(--bg-surface)]">
                 <iframe
                   src={featuredPost.embedUrl}
+                  title="WorldQuant BRAIN Gold Level Certificate — LinkedIn Post"
                   loading="lazy"
-                  height="500"
-                  width="540"
-                  title={featuredPost.title}
                   allowFullScreen
-                  className="block h-[420px] w-full border-0 sm:h-[500px]"
+                  className="h-[460px] w-full border-0"
                 />
               </div>
 
@@ -442,9 +410,8 @@ export function ContactFooter({ onCopyEmail }: ContactFooterProps) {
                 <p className="font-mono text-[11px] text-muted">
                   If an ad blocker hides the embed, open directly on LinkedIn.
                 </p>
-
                 <a
-                  href={postHref}
+                  href={postTargetUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-monochrome inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-xs font-medium"

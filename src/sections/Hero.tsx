@@ -10,7 +10,7 @@ import {
 } from '../lib/motion';
 
 export function Hero() {
-  const { identity } = profileConfig;
+  const { identity, links } = profileConfig;
   const { neuralMode, setNeuralMode, triggerPulse } = useSpatialWorld();
 
   return (
@@ -42,10 +42,10 @@ export function Hero() {
           >
             {identity.role} ·{' '}
             <a
-              href={profileConfig.links.newtonSchoolUrl}
+              href={links.newtonSchoolUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline decoration-[var(--border-hairline)] underline-offset-4 transition-colors duration-150 hover:text-ink hover:decoration-[var(--border-hairline-hover)]"
+              className="underline decoration-[var(--border-hairline-hover)] underline-offset-4 transition-colors duration-150 hover:text-ink"
             >
               {identity.institution}
             </a>

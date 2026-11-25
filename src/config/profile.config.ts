@@ -19,18 +19,9 @@ export interface LinksConfig {
   githubUsername: string;
   githubUrl: string;
   linkedinUrl: string;
-  newtonSchoolHandle: string;
   newtonSchoolUrl: string;
   email: string;
   resumeUrl: string;
-}
-
-export interface FeaturedCredentialConfig {
-  title: string;
-  subtitle: string;
-  summary: string;
-  postUrl: string;
-  embedUrl: string;
 }
 
 export interface SkillItem {
@@ -135,12 +126,20 @@ export interface LinkedInConfig {
   highlights: string[];
 }
 
+export interface FeaturedPostConfig {
+  title: string;
+  subtitle: string;
+  summary: string;
+  postUrl: string;
+  embedUrl: string;
+}
+
 export interface ProfileConfig {
   identity: IdentityConfig;
   links: LinksConfig;
   chess: ChessConfig;
   linkedin: LinkedInConfig;
-  featuredPost: FeaturedCredentialConfig;
+  featuredPost: FeaturedPostConfig;
   flagshipProject: FlagshipProjectConfig;
   skills: SkillTrack[];
   featuredBuilds: ProjectItem[];
@@ -156,10 +155,10 @@ export const profileConfig: ProfileConfig = {
     name: 'Unmesh',
     role: 'B.Tech CS (AI & ML) · Quant Researcher',
     institution: 'Newton School of Technology, Pune',
-    status: 'First-Year Undergraduate · AI/ML, Systems & WorldQuant BRAIN Gold',
+    status: 'WorldQuant BRAIN Gold · B.Tech CS (AI & ML)',
     headline: 'Unmesh.',
-    tagline: 'building at the intersection of AI, systems & alpha.',
-    bio: 'First-year Computer Science (AI & ML) student at Newton School of Technology, Pune, and WorldQuant BRAIN Gold Level Quantitative Researcher. Exploring machine learning, mathematical alpha signals, low-level logic, and tactile software interfaces.',
+    tagline: 'still figuring out',
+    bio: 'First-year Computer Science (AI & ML) student at Newton School of Technology, Pune and Quantitative Researcher (WorldQuant BRAIN — Gold Level). Exploring alpha modeling, machine learning, and tactile software interfaces.',
     location: 'Pune, India',
   },
 
@@ -168,7 +167,6 @@ export const profileConfig: ProfileConfig = {
     githubUsername: 'unmesh9073-ops',
     githubUrl: 'https://github.com/unmesh9073-ops',
     linkedinUrl: 'https://www.linkedin.com/in/unmesh-bhagat-096578271/',
-    newtonSchoolHandle: 'unmesh9073',
     newtonSchoolUrl: 'https://my.newtonschool.co/user/unmesh9073',
     email: 'unmesh9073@gmail.com',
     resumeUrl: '',
@@ -197,13 +195,12 @@ export const profileConfig: ProfileConfig = {
     location: 'Pune, Maharashtra, India',
     education: 'Newton School of Technology, Pune · B.Tech Computer Science (AI & ML)',
     openTo: [
-      'AI & ML Internships',
-      'Quant Research & Alpha Modeling',
+      'Quant & AI/ML Internships',
       'Hackathon Collaborations',
-      'Systems Engineering',
+      'Research & Systems Projects',
     ],
     highlights: [
-      'WorldQuant BRAIN — Gold Level Quantitative Researcher (10,000+ Points), designing and validating cross-sectional mathematical alpha signals.',
+      'Quantitative Researcher — WorldQuant BRAIN Gold Level (10,000+ points) designing cross-sectional alpha signals.',
       'First-Year B.Tech CS (AI & ML) undergraduate at Newton School of Technology, Pune.',
       'SIH 2026 Problem Statement #37 — Autonomous Path Planning & Collision Avoidance on Unstructured Indian Roads.',
     ],
@@ -216,7 +213,7 @@ export const profileConfig: ProfileConfig = {
       'Achieved Gold tier on WorldQuant BRAIN by designing, simulating, and validating cross-sectional mathematical alpha signals.',
     postUrl: 'https://lnkd.in/p/d5XCQ5AZ',
     embedUrl:
-      'https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7519627535442399232?collapsed=1',
+      'https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7519627535442399232',
   },
 
   flagshipProject: {
@@ -296,16 +293,16 @@ export const profileConfig: ProfileConfig = {
           focus: 'Gradient optimization, linear models, and neural representations',
         },
         {
-          name: 'Data Structures & Algorithms',
-          focus: 'Complexity analysis, recursion, trees, and graph traversal',
-        },
-        {
           name: 'Quantitative Research',
-          focus: 'Cross-sectional signal hypothesis, backtesting, and factor evaluation on WorldQuant BRAIN',
+          focus: 'Cross-sectional statistical modeling, backtesting, and signal evaluation',
         },
         {
           name: 'Alpha Modeling',
-          focus: 'Statistical neutrality, turnover control, and mathematical expression synthesis',
+          focus: 'WorldQuant BRAIN fast-expression synthesis, turnover control, and risk neutralization',
+        },
+        {
+          name: 'Data Structures & Algorithms',
+          focus: 'Complexity analysis, recursion, trees, and graph traversal',
         },
       ],
     },

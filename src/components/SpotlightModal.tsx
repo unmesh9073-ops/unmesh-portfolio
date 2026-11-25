@@ -403,22 +403,25 @@ function SpotlightDialogContent({
         payload: { kind: 'external', url: profileConfig.links.linkedinUrl },
       },
       {
-        id: 'spotlight-act-worldquant',
-        group: 'actions',
-        title: 'WorldQuant BRAIN Gold Post',
-        subtitle: profileConfig.featuredPost.subtitle,
-        icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'worldquant brain gold certificate quant researcher linkedin post',
-        payload: { kind: 'external', url: profileConfig.featuredPost.postUrl },
-      },
-      {
         id: 'spotlight-act-newton',
         group: 'actions',
         title: 'Open Newton School Profile',
         subtitle: profileConfig.links.newtonSchoolUrl.replace('https://', ''),
         icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'newton school of technology college profile unmesh9073',
+        keywords: 'newton school college nst profile external link',
         payload: { kind: 'external', url: profileConfig.links.newtonSchoolUrl },
+      },
+      {
+        id: 'spotlight-act-wq-gold',
+        group: 'actions',
+        title: 'WorldQuant BRAIN Gold Post',
+        subtitle: profileConfig.featuredPost.subtitle,
+        icon: <ExternalLink className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'worldquant brain gold certificate quant researcher linkedin post',
+        payload: {
+          kind: 'external',
+          url: profileConfig.featuredPost.postUrl || profileConfig.links.linkedinUrl,
+        },
       },
     ];
 
