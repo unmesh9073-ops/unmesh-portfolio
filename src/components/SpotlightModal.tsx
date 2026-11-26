@@ -1,11 +1,8 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowDownRight,
-  BookOpen,
-  Briefcase,
   Compass,
   Copy,
-  Cpu,
   Crown,
   ExternalLink,
   FileText,
@@ -29,6 +26,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { profileConfig } from '../config/profile.config';
 import { useChess } from '../context/useChess';
 import { useGitHub } from '../context/GitHubContext';
@@ -40,6 +38,7 @@ import {
   type PortfolioRepo,
 } from '../lib/github';
 import { PRODUCTIVE_EASE } from '../lib/motion';
+import { playSpatialSwitch } from '../lib/spatialAudio';
 
 export interface SpotlightModalProps {
   open: boolean;
@@ -51,7 +50,7 @@ type CommandGroupKey = 'repos' | 'navigate' | 'actions';
 
 type CommandPayload =
   | { kind: 'repo'; repo: PortfolioRepo }
-  | { kind: 'nav'; sectionId: string }
+  | { kind: 'nav'; path: string }
   | { kind: 'archive' }
   | { kind: 'theme' }
   | { kind: 'copyEmail' }
@@ -114,6 +113,7 @@ function SpotlightDialogContent({
     topOverallRating,
     refresh: refreshChess,
   } = useChess();
+  const navigate = useNavigate();
   const shouldReduceMotion = useReducedMotion();
 
   const [query, setQuery] = useState('');
@@ -207,96 +207,80 @@ function SpotlightDialogContent({
   const navigateCommands = useMemo<SpotlightCommand[]>(() => {
     const base: SpotlightCommand[] = [
       {
-        id: 'spotlight-nav-top',
+        id: 'spotlight-nav-overview',
         group: 'navigate',
         title: 'Overview',
-        subtitle: 'Hero & 3D Neural Volume',
+        subtitle: 'Hero, Neural Volume & 01–04 Core Pillars',
         icon: <Compass className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'home hero overview top neural volume',
-        payload: { kind: 'nav', sectionId: 'top' },
+        keywords: 'home hero overview top neural volume pillars',
+        payload: { kind: 'nav', path: '/' },
       },
       {
-        id: 'spotlight-nav-sih',
+        id: 'spotlight-nav-projects',
         group: 'navigate',
-        title: 'SIH 2026 Flagship',
-        subtitle: 'Adaptive Path Planning & Collision Avoidance',
-        icon: <Route className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'sih 2026 problem statement 37 autonomous vehicle path planning collision avoidance',
-        payload: { kind: 'nav', sectionId: 'sih' },
-      },
-      {
-        id: 'spotlight-nav-work',
-        group: 'navigate',
-        title: 'Selected Work',
-        subtitle: 'Featured builds & systems',
+        title: 'Projects',
+        subtitle: 'Live GitHub showcase & Architectural Monoliths',
         icon: <Layers className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'work featured builds projects',
-        payload: { kind: 'nav', sectionId: 'work' },
+        keywords: 'work featured builds projects github repos',
+        payload: { kind: 'nav', path: '/projects' },
       },
       {
-        id: 'spotlight-nav-lab',
+        id: 'spotlight-nav-hackathons',
         group: 'navigate',
-        title: 'AI/ML Lab',
-        subtitle: 'Experiments & prototypes',
+        title: 'Hackathons · SIH 2026',
+        subtitle: 'Adaptive Path Planning & 3D LiDAR Simulator',
+        icon: <Route className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'sih 2026 problem statement 37 autonomous vehicle path planning collision avoidance hackathons',
+        payload: { kind: 'nav', path: '/hackathons' },
+      },
+      {
+        id: 'spotlight-nav-research',
+        group: 'navigate',
+        title: 'Research & Lab',
+        subtitle: 'WorldQuant BRAIN Gold, AI/ML Lab & Foundations',
         icon: <FlaskConical className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'lab ai ml machine learning experiments',
-        payload: { kind: 'nav', sectionId: 'lab' },
+        keywords: 'research worldquant brain gold lab ai ml foundations stack python cpp',
+        payload: { kind: 'nav', path: '/research' },
       },
       {
-        id: 'spotlight-nav-foundations',
+        id: 'spotlight-nav-interests',
         group: 'navigate',
-        title: 'Foundations & Stack',
-        subtitle: 'Languages & core study tracks',
-        icon: <Cpu className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'foundations stack skills python cpp html css javascript',
-        payload: { kind: 'nav', sectionId: 'foundations' },
-      },
-      {
-        id: 'spotlight-nav-chess',
-        group: 'navigate',
-        title: 'Chess & Tactics',
+        title: 'Interests · Chess',
         subtitle: topOverallRating
           ? `${topOverallRating.platform === 'chesscom' ? 'Chess.com' : 'Lichess'} · ${topOverallRating.label} ${topOverallRating.rating}`
-          : 'Chess.com & Lichess · 3D Board',
+          : 'Chess.com & Lichess · 3D Ruy Lopez Board',
         icon: <Crown className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'chess lichess tactics rapid blitz puzzle rating hobby',
-        payload: { kind: 'nav', sectionId: 'chess' },
+        keywords: 'interests chess lichess tactics rapid blitz puzzle rating hobby',
+        payload: { kind: 'nav', path: '/interests' },
       },
+      {
+        id: 'spotlight-nav-contact',
+        group: 'navigate',
+        title: 'Contact',
+        subtitle: `LinkedIn Identity Hub · ${profileConfig.links.email}`,
+        icon: <Mail className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: 'contact email github linkedin newton school reach',
+        payload: { kind: 'nav', path: '/contact' },
+      },
+      {
+        id: 'spotlight-nav-game',
+        group: 'navigate',
+        title: "Play Knight's Sprint",
+        subtitle: '6×6 Chess tactical 30-second mini-game',
+        icon: <Crown className="h-4 w-4 text-accent" aria-hidden="true" />,
+        keywords: 'game knight sprint chess 404 mini-game play',
+        payload: { kind: 'nav', path: '/game' },
+      },
+      ...profileConfig.caseStudies.map((cs) => ({
+        id: `spotlight-cs-${cs.slug}`,
+        group: 'navigate' as const,
+        title: `${cs.number} · ${cs.title}`,
+        subtitle: `${cs.category} Case Study · ${cs.metric}`,
+        icon: <Compass className="h-4 w-4 text-muted" aria-hidden="true" />,
+        keywords: `case study ${cs.category} ${cs.title} ${cs.stack.join(' ')}`,
+        payload: { kind: 'nav' as const, path: `/projects/${cs.slug}` },
+      })),
     ];
-
-    if (profileConfig.modules.showExperience) {
-      base.push({
-        id: 'spotlight-nav-experience',
-        group: 'navigate',
-        title: 'Experience',
-        subtitle: 'Internships & roles',
-        icon: <Briefcase className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'experience internships career work',
-        payload: { kind: 'nav', sectionId: 'experience' },
-      });
-    }
-
-    if (profileConfig.modules.showResearchNotes) {
-      base.push({
-        id: 'spotlight-nav-notes',
-        group: 'navigate',
-        title: 'Notes',
-        subtitle: 'Technical essays & write-ups',
-        icon: <BookOpen className="h-4 w-4 text-muted" aria-hidden="true" />,
-        keywords: 'notes research writing articles blog',
-        payload: { kind: 'nav', sectionId: 'notes' },
-      });
-    }
-
-    base.push({
-      id: 'spotlight-nav-contact',
-      group: 'navigate',
-      title: 'Contact',
-      subtitle: profileConfig.links.email,
-      icon: <Mail className="h-4 w-4 text-muted" aria-hidden="true" />,
-      keywords: 'contact email github linkedin reach',
-      payload: { kind: 'nav', sectionId: 'contact' },
-    });
 
     if (!normalizedQuery) return base;
     return base.filter(
@@ -499,17 +483,8 @@ function SpotlightDialogContent({
           break;
         case 'nav':
           closeModal(false);
-          if (payload.sectionId === 'top') {
-            window.scrollTo({
-              top: 0,
-              behavior: shouldReduceMotion ? 'auto' : 'smooth',
-            });
-          } else {
-            document.getElementById(payload.sectionId)?.scrollIntoView({
-              behavior: shouldReduceMotion ? 'auto' : 'smooth',
-              block: 'start',
-            });
-          }
+          playSpatialSwitch();
+          navigate(payload.path);
           break;
         case 'theme':
           closeModal(false);
@@ -549,7 +524,7 @@ function SpotlightDialogContent({
       closeModal,
       setSelectedRepo,
       openArchiveWithFilter,
-      shouldReduceMotion,
+      navigate,
       toggleTheme,
       onShowToast,
       refresh,

@@ -12,6 +12,7 @@ import {
   snappySpring,
   tapFeedback,
 } from '../lib/motion';
+import { playSpatialTap } from '../lib/spatialAudio';
 
 const SEQUENCE_LABELS = [
   '1. e4 e5',
@@ -71,7 +72,10 @@ export function ChessSection() {
                       type="button"
                       role="tab"
                       aria-selected={isSelected}
-                      onClick={() => setActivePlatform(item.id)}
+                      onClick={() => {
+                        playSpatialTap();
+                        setActivePlatform(item.id);
+                      }}
                       className={`relative inline-flex h-8 cursor-pointer items-center justify-center rounded-full px-3.5 text-xs font-medium tracking-[-0.01em] transition-colors duration-150 ${
                         isSelected ? 'text-ink' : 'text-muted hover:text-ink'
                       }`}

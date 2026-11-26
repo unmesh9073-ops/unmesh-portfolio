@@ -134,13 +134,60 @@ export interface FeaturedPostConfig {
   embedUrl: string;
 }
 
+export interface CorePillarItem {
+  number: string;
+  title: string;
+  subtitle: string;
+  route: string;
+  targetLabel: string;
+}
+
+export interface InterestItem {
+  id: string;
+  title: string;
+  category: string;
+  summary: string;
+}
+
+export type CaseStudyCategory = 'Autonomous' | 'Quant' | 'AI & ML' | 'Systems';
+export type CaseStudyChapter = 'projects' | 'hackathons' | 'research';
+
+export interface CaseStudyAction {
+  label: string;
+  to?: string;
+  href?: string;
+}
+
+export interface CaseStudyItem {
+  slug: string;
+  number: string;
+  category: CaseStudyCategory;
+  chapter: CaseStudyChapter;
+  title: string;
+  subtitle: string;
+  summary: string;
+  role: string;
+  year: string;
+  metric: string;
+  stack: string[];
+  challenge: string;
+  architecture: string;
+  impact: string;
+  primaryAction?: CaseStudyAction;
+  secondaryAction?: CaseStudyAction;
+}
+
 export interface ProfileConfig {
   identity: IdentityConfig;
   links: LinksConfig;
+  corePillars: CorePillarItem[];
+  caseStudies: CaseStudyItem[];
   chess: ChessConfig;
+  interests: InterestItem[];
   linkedin: LinkedInConfig;
   featuredPost: FeaturedPostConfig;
   flagshipProject: FlagshipProjectConfig;
+  hackathons: FlagshipProjectConfig[];
   skills: SkillTrack[];
   featuredBuilds: ProjectItem[];
   labExperiments: LabItem[];
@@ -172,6 +219,124 @@ export const profileConfig: ProfileConfig = {
     resumeUrl: '',
   },
 
+  corePillars: [
+    {
+      number: '01',
+      title: 'AI & Machine Learning',
+      subtitle: 'Neural topologies, gradient optimization, and representation learning experiments.',
+      route: '/research',
+      targetLabel: 'Explore Research & Lab',
+    },
+    {
+      number: '02',
+      title: 'Quantitative Research',
+      subtitle: 'WorldQuant BRAIN Gold researcher designing cross-sectional mathematical alpha signals.',
+      route: '/research',
+      targetLabel: 'View Credentials & Stack',
+    },
+    {
+      number: '03',
+      title: 'Autonomous Systems',
+      subtitle: 'SIH 2026 PS #37 local trajectory planning & collision avoidance on unstructured roads.',
+      route: '/hackathons',
+      targetLabel: 'Open 3D Simulator',
+    },
+    {
+      number: '04',
+      title: 'Full-Stack & Spatial 3D',
+      subtitle: 'Live-synced TypeScript, React, and WebGL interfaces engineered with Quiet Luxury craft.',
+      route: '/projects',
+      targetLabel: 'Browse Live Repos',
+    },
+  ],
+
+  caseStudies: [
+    {
+      slug: 'sih-2026-autonomous-path-planning',
+      number: '01',
+      category: 'Autonomous',
+      chapter: 'hackathons',
+      title: 'Adaptive Path Planning & Collision Avoidance',
+      subtitle: 'Smart India Hackathon 2026 · Problem Statement #37',
+      summary:
+        'Real-time local trajectory planner and dynamic obstacle-avoidance pipeline engineered for unmarked, unstructured Indian roads.',
+      role: 'Lead Systems & Trajectory Architect',
+      year: '2026',
+      metric: 'Real-Time Spline Loop',
+      stack: ['C++', 'Python', 'Path Planning', 'LiDAR Fusion', 'Spline Control'],
+      challenge:
+        'Standard autonomous navigation stacks assume crisp lane markings, uniform curbs, and predictable traffic. Unstructured Indian roads introduce unmarked boundaries, sudden pedestrian/two-wheeler intrusions, and irregular road geometry that break rigid lane-following planners.',
+      architecture:
+        'Built a deterministic C++ and Python perception-to-planning loop combining LiDAR spatial occupancy grids with drivable-surface boundary estimation. Dynamic hazards trigger real-time cubic-spline trajectory re-planning that bends smoothly around intrusions while respecting vehicle kinematic constraints.',
+      impact:
+        'Validated continuous corridor clearance under multi-hazard injection scenarios with low-latency edge-ready inference, paired with an interactive 3D LiDAR & trajectory simulator inside this portfolio.',
+      primaryAction: {
+        label: 'Open Live 3D Simulator',
+        to: '/hackathons',
+      },
+      secondaryAction: {
+        label: 'View GitHub Profile',
+        href: 'https://github.com/unmesh9073-ops',
+      },
+    },
+    {
+      slug: 'worldquant-brain-alpha-research',
+      number: '02',
+      category: 'Quant',
+      chapter: 'research',
+      title: 'WorldQuant BRAIN — Gold Level Alpha Research',
+      subtitle: '10,000+ Points · Cross-Sectional Signal Synthesis',
+      summary:
+        'Designing, simulating, and risk-neutralizing cross-sectional mathematical alpha signals across equities datasets.',
+      role: 'Quantitative Researcher (Gold Tier)',
+      year: '2025 — 2026',
+      metric: '10,000+ Points · Gold',
+      stack: ['Fast Expressions', 'Statistical Modeling', 'Risk Neutralization', 'Backtesting', 'Python'],
+      challenge:
+        'Discovering orthogonal alpha signals that maintain high Sharpe and Fitness while keeping turnover controlled and avoiding correlation crowding with existing production alphas.',
+      architecture:
+        'Synthesized multi-factor mathematical expressions combining price-volume microstructure, fundamental ratios, and volatility-normalized momentum with sector/market neutralization and decay tuning.',
+      impact:
+        'Achieved Gold Level status (10,000+ points) on WorldQuant BRAIN by consistently passing strict out-of-sample, turnover, and correlation-gate checks.',
+      primaryAction: {
+        label: 'View Research & Credential',
+        to: '/research',
+      },
+      secondaryAction: {
+        label: 'Open LinkedIn Certificate Post',
+        href: 'https://lnkd.in/p/d5XCQ5AZ',
+      },
+    },
+    {
+      slug: 'spatial-portfolio-os',
+      number: '03',
+      category: 'Systems',
+      chapter: 'projects',
+      title: 'Volumetric 3D Spatial Portfolio OS',
+      subtitle: 'visionOS-Inspired Multi-Tab WebGL Architecture',
+      summary:
+        'Persistent Three.js / React Three Fiber camera choreography paired with live GitHub, Chess.com, and Lichess telemetry.',
+      role: 'Creator & Design Engineer',
+      year: '2026',
+      metric: '60fps Persistent WebGL',
+      stack: ['React 19', 'TypeScript', 'Three.js / R3F', 'Framer Motion', 'Tailwind CSS'],
+      challenge:
+        'Multi-page 3D web portfolios typically reload WebGL contexts on every route change, causing frame hitches, shader recompilation stutter, and jarring camera resets.',
+      architecture:
+        'Mounted a single persistent full-viewport WebGL canvas driven by React Router pathname telemetry, smoothly damping camera keyframes across 6 spatial chapters while layering visionOS liquid-glass windows and Web Audio micro-taps.',
+      impact:
+        'Delivers zero-reload 3D camera fly-throughs, live API synchronization across GitHub, Chess.com, and Lichess, and full reduced-motion accessibility.',
+      primaryAction: {
+        label: 'Explore Live Repositories',
+        to: '/projects',
+      },
+      secondaryAction: {
+        label: 'Open Overview Stage',
+        to: '/',
+      },
+    },
+  ],
+
   chess: {
     headline: 'Pattern recognition beyond code.',
     bio: 'Playing rapid and blitz across Chess.com and Lichess to sharpen calculation, endgame precision, and decision-making under time pressure.',
@@ -186,6 +351,15 @@ export const profileConfig: ProfileConfig = {
       profileUrl: 'https://lichess.org/@/b_l_n_00',
     },
   },
+
+  interests: [
+    {
+      id: 'chess',
+      title: 'Chess & Tactical Calculation',
+      category: 'Dual-Platform Analytics',
+      summary: 'Active rapid and blitz play across Chess.com and Lichess with Ruy Lopez opening study.',
+    },
+  ],
 
   linkedin: {
     handle: 'unmesh-bhagat-096578271',
@@ -244,6 +418,37 @@ export const profileConfig: ProfileConfig = {
     status: 'SIH 2026 · Active Build',
     stack: ['C++', 'Python', 'Path Planning', 'LiDAR Fusion', 'Spline Control'],
   },
+
+  hackathons: [
+    {
+      id: 'sih-2026-ps37',
+      badge: 'Smart India Hackathon 2026 · Problem Statement #37',
+      title: 'Adaptive Path Planning & Collision Avoidance',
+      subtitle: 'Autonomous Vehicles on Unstructured Indian Roads',
+      summary:
+        'Real-time local trajectory planner and dynamic obstacle-avoidance pipeline engineered for unmarked lanes, irregular road edges, and mixed-traffic agents across unstructured Indian road environments.',
+      highlights: [
+        {
+          title: 'Dynamic Obstacle Avoidance',
+          detail: 'Continuous spatial occupancy tracking for moving and static hazards with instant corridor clearance.',
+        },
+        {
+          title: 'Unstructured Road Perception',
+          detail: 'Drivable-surface boundary estimation without relying on crisp lane markings or uniform curbs.',
+        },
+        {
+          title: 'Real-Time Trajectory Re-planning',
+          detail: 'Smooth cubic-spline path synthesis that bends around sudden intrusions while respecting vehicle kinematics.',
+        },
+        {
+          title: 'Edge-Ready Inference',
+          detail: 'Deterministic C++ and Python compute loop tuned for low-latency onboard sensor fusion.',
+        },
+      ],
+      status: 'SIH 2026 · Active Build',
+      stack: ['C++', 'Python', 'Path Planning', 'LiDAR Fusion', 'Spline Control'],
+    },
+  ],
 
   skills: [
     {

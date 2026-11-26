@@ -1,9 +1,12 @@
-import { MotionConfig } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'framer-motion';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { AllReposModal } from './components/AllReposModal';
 import { FloatingDock } from './components/FloatingDock';
 import { LiquidGlassToast } from './components/LiquidGlassToast';
+import { PrecisionPreloader } from './components/PrecisionPreloader';
 import { ProjectDetailSheet } from './components/ProjectDetailSheet';
+import { SpatialMinimap } from './components/SpatialMinimap';
 import { SpatialWorldStage } from './components/SpatialWorldStage';
 import { SpotlightModal } from './components/SpotlightModal';
 import { TopBar } from './components/TopBar';
@@ -12,17 +15,47 @@ import { GitHubProvider, useGitHub } from './context/GitHubContext';
 import { SpatialWorldProvider } from './context/SpatialWorldContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ensureFocusVisibleClearance } from './lib/focusClearance';
-import { ChessSection } from './sections/ChessSection';
-import { ContactFooter } from './sections/ContactFooter';
-import { ExperienceSection } from './sections/ExperienceSection';
-import { FoundationsSection } from './sections/FoundationsSection';
-import { Hero } from './sections/Hero';
-import { LabSection } from './sections/LabSection';
-import { NotesSection } from './sections/NotesSection';
-import { SihFlagshipSection } from './sections/SihFlagshipSection';
-import { WorkSection } from './sections/WorkSection';
+import { spatialWindowTransition } from './lib/motion';
+import { CaseStudyDetailPage } from './pages/CaseStudyDetailPage';
+import { ContactPage } from './pages/ContactPage';
+import { HackathonsPage } from './pages/HackathonsPage';
+import { InterestsPage } from './pages/InterestsPage';
+import { NotFoundPage } from './pages/NotFoundPage';
+import { OverviewPage } from './pages/OverviewPage';
+import { ProjectsPage } from './pages/ProjectsPage';
+import { ResearchPage } from './pages/ResearchPage';
+
+function SpatialWindow({ children }: { children: ReactNode }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  if (shouldReduceMotion) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.15 }}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96, filter: 'blur(4px)' }}
+      animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, scale: 0.96, filter: 'blur(4px)' }}
+      transition={spatialWindowTransition}
+      style={{ willChange: 'transform, opacity, filter' }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 function PortfolioShell() {
+  const location = useLocation();
   const { selectedRepo, setSelectedRepo, archiveOpen, closeArchive } = useGitHub();
   const [spotlightOpen, setSpotlightOpen] = useState(false);
   const [toastState, setToastState] = useState<{ visible: boolean; message: string }>({
@@ -30,6 +63,10 @@ function PortfolioShell() {
     message: '',
   });
   const toastTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [location.pathname]);
 
   const showToast = useCallback((message: string) => {
     setToastState({ visible: true, message });
@@ -90,9 +127,10 @@ function PortfolioShell() {
 
   return (
     <div
-      className="relative min-h-svh bg-canvas text-ink"
+      className="relative min-h-svh overflow-x-clip bg-canvas text-ink"
       onFocusCapture={(event) => ensureFocusVisibleClearance(event.target)}
     >
+      <PrecisionPreloader />
       <SpatialWorldStage />
 
       <a
@@ -105,19 +143,85 @@ function PortfolioShell() {
       <TopBar onOpenSpotlight={openSpotlight} />
 
       <main id="main-content" tabIndex={-1} className="relative z-10 focus:outline-none">
-        <Hero />
-        <SihFlagshipSection />
-        <WorkSection />
-        <LabSection />
-        <FoundationsSection />
-        <ChessSection />
-        <ExperienceSection />
-        <NotesSection />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route
+              path="/"
+              element={
+                <SpatialWindow>
+                  <OverviewPage />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="/projects"
+              element={
+                <SpatialWindow>
+                  <ProjectsPage />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="/projects/:slug"
+              element={
+                <SpatialWindow>
+                  <CaseStudyDetailPage />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="/hackathons"
+              element={
+                <SpatialWindow>
+                  <HackathonsPage />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="/research"
+              element={
+                <SpatialWindow>
+                  <ResearchPage />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="/interests"
+              element={
+                <SpatialWindow>
+                  <InterestsPage />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <SpatialWindow>
+                  <ContactPage onCopyEmail={handleCopyEmail} />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="/game"
+              element={
+                <SpatialWindow>
+                  <NotFoundPage isGameRoute />
+                </SpatialWindow>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <SpatialWindow>
+                  <NotFoundPage />
+                </SpatialWindow>
+              }
+            />
+          </Routes>
+        </AnimatePresence>
       </main>
 
-      <div className="relative z-10">
-        <ContactFooter onCopyEmail={handleCopyEmail} />
-      </div>
+      <SpatialMinimap />
 
       <FloatingDock onOpenSpotlight={openSpotlight} receded={isAnyOverlayOpen} />
 

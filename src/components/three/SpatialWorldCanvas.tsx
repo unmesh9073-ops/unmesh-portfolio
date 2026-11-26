@@ -19,6 +19,7 @@ import type { NeuralVolumeMode, PulseSignal } from './types';
 
 export interface SpatialWorldCanvasProps {
   theme: ThemeMode;
+  activeChapter: number;
   neuralMode: NeuralVolumeMode;
   pulseSignal: PulseSignal;
   obstacleSeed: number;
@@ -37,31 +38,19 @@ interface ChapterKeyframes {
 }
 
 const CHAPTER_KEYFRAMES: ReadonlyArray<ChapterKeyframes> = [
-  // 0: Hero (#top)
+  // 0: Overview (/) — Neural Volume
   { camPos: [0, 0, 5.4], lookAt: [0, 0, 0] },
-  // 1: SIH 2026 Flagship (#sih)
-  { camPos: [0.15, -7.25, 6.2], lookAt: [0.3, -8.65, 0] },
-  // 2: Selected Work (#work)
-  { camPos: [-0.2, -16.4, 6.4], lookAt: [0, -17.0, 0] },
-  // 3: AI/ML Lab (#lab)
-  { camPos: [0.2, -24.5, 6.2], lookAt: [0, -25.0, 0] },
-  // 4: Foundations (#foundations)
-  { camPos: [0, -32.2, 6.5], lookAt: [0, -33.2, -0.4] },
-  // 5: Chess Hobby (#chess)
-  { camPos: [0.25, -40.2, 6.1], lookAt: [0.35, -41.6, 0] },
-  // 6: Contact & LinkedIn Identity Hub (#contact)
-  { camPos: [0, -49.1, 6.3], lookAt: [0, -50.0, -0.4] },
+  // 1: Projects (/projects) — Architectural Monoliths & Orbital Data Rings
+  { camPos: [-0.2, -11.4, 6.4], lookAt: [0, -12.0, 0] },
+  // 2: Hackathons (/hackathons) — 3D Autonomous Road & LiDAR Simulator
+  { camPos: [0.15, -22.6, 6.2], lookAt: [0.3, -24.0, 0] },
+  // 3: Research (/research) — Sculptural Lattice & Data Geometry
+  { camPos: [0, -35.0, 6.5], lookAt: [0, -36.0, -0.4] },
+  // 4: Interests (/interests) — 3D Ruy Lopez Chess Sculpture
+  { camPos: [0.25, -46.55, 6.1], lookAt: [0.35, -48.0, 0] },
+  // 5: Contact (/contact) — 3D Network Constellation
+  { camPos: [0, -59.1, 6.3], lookAt: [0, -60.0, -0.4] },
 ];
-
-const CHAPTER_SECTION_IDS = [
-  'top',
-  'sih',
-  'work',
-  'lab',
-  'foundations',
-  'chess',
-  'contact',
-] as const;
 
 function AmbientDepthParticles({
   theme,
@@ -84,7 +73,7 @@ function AmbientDepthParticles({
     };
     for (let i = 0; i < count; i++) {
       arr[i * 3] = (rand() - 0.5) * 14;
-      arr[i * 3 + 1] = 4 - rand() * 58;
+      arr[i * 3 + 1] = 6 - rand() * 72;
       arr[i * 3 + 2] = -1.5 - rand() * 7;
     }
     return arr;
@@ -167,7 +156,7 @@ function WorkMonoliths({
   const isDark = theme === 'dark';
 
   return (
-    <group ref={groupRef} position={[0, -17.0, 0]}>
+    <group ref={groupRef} position={[0, -12.0, 0]}>
       {specs.map((spec, idx) => (
         <group
           key={idx}
@@ -233,7 +222,7 @@ function LabOrbitalRings({
   const radii = [1.45, 1.95, 2.45];
 
   return (
-    <group ref={groupRef} position={[1.15, -25.0, -1.2]} rotation={[0.42, -0.28, 0]}>
+    <group ref={groupRef} position={[1.35, -12.0, -1.6]} rotation={[0.42, -0.28, 0]}>
       {radii.map((radius, idx) => (
         <mesh
           key={radius}
@@ -284,7 +273,7 @@ function FoundationsLattice({
   });
 
   return (
-    <group ref={groupRef} position={[0, -33.2, -0.8]}>
+    <group ref={groupRef} position={[0, -36.0, -0.8]}>
       {/* Calm horizon grid */}
       <gridHelper
         args={[16, 24, isDark ? '#3A4250' : '#94A3B8', isDark ? '#1A1D24' : '#CBD5E1']}
@@ -383,7 +372,7 @@ function ContactConstellation({
   const isDark = theme === 'dark';
 
   return (
-    <group ref={groupRef} position={[0, -50.0, -0.5]}>
+    <group ref={groupRef} position={[0, -60.0, -0.5]}>
       <lineSegments geometry={lineGeo}>
         <lineBasicMaterial
           ref={lineMatRef}
@@ -408,6 +397,7 @@ function ContactConstellation({
 
 function SpatialWorldScene({
   theme,
+  activeChapter,
   neuralMode,
   pulseSignal,
   obstacleSeed,
@@ -423,8 +413,8 @@ function SpatialWorldScene({
 
   const heroGroupRef = useRef<THREE.Group>(null);
   const lastPulseIdRef = useRef(0);
-  const scrollChapterRef = useRef(0);
-  const smoothedChapterRef = useRef(0);
+  const targetChapterRef = useRef(activeChapter);
+  const smoothedChapterRef = useRef(activeChapter);
 
   const fogColorRef = useRef(
     new THREE.Color(theme === 'dark' ? '#060608' : '#F5F5F7'),
@@ -455,67 +445,15 @@ function SpatialWorldScene({
     },
   });
 
-  // Track section offsets without React re-renders
-  const sectionAnchorsRef = useRef<number[]>([0, 800, 1600, 2400, 3200, 4000, 4800]);
-
+  // Route-driven camera chapter target
   useEffect(() => {
-    const measureSections = () => {
-      const anchors = CHAPTER_SECTION_IDS.map((id, idx) => {
-        if (id === 'top') return 0;
-        const el = document.getElementById(id);
-        if (!el) return idx * window.innerHeight;
-        const rect = el.getBoundingClientRect();
-        return Math.max(0, rect.top + window.scrollY - window.innerHeight * 0.25);
-      });
-      sectionAnchorsRef.current = anchors;
-    };
-
-    const updateScrollChapter = () => {
-      const y = window.scrollY;
-      const anchors = sectionAnchorsRef.current;
-      if (y <= anchors[0]) {
-        scrollChapterRef.current = 0;
-      } else if (y >= anchors[anchors.length - 1]) {
-        scrollChapterRef.current = anchors.length - 1;
-      } else {
-        for (let i = 0; i < anchors.length - 1; i++) {
-          const start = anchors[i];
-          const end = anchors[i + 1];
-          if (y >= start && y <= end) {
-            const span = Math.max(1, end - start);
-            scrollChapterRef.current = i + (y - start) / span;
-            break;
-          }
-        }
-      }
-      if (prefersReducedMotion) {
-        invalidate();
-      }
-    };
-
-    measureSections();
-    updateScrollChapter();
-
-    const resizeObserver =
-      typeof ResizeObserver !== 'undefined'
-        ? new ResizeObserver(() => {
-            measureSections();
-            updateScrollChapter();
-          })
-        : null;
-    if (resizeObserver) {
-      resizeObserver.observe(document.body);
-    }
-
-    window.addEventListener('scroll', updateScrollChapter, { passive: true });
-    window.addEventListener('resize', measureSections, { passive: true });
-
-    return () => {
-      resizeObserver?.disconnect();
-      window.removeEventListener('scroll', updateScrollChapter);
-      window.removeEventListener('resize', measureSections);
-    };
-  }, [prefersReducedMotion, invalidate]);
+    targetChapterRef.current = THREE.MathUtils.clamp(
+      activeChapter,
+      0,
+      CHAPTER_KEYFRAMES.length - 1,
+    );
+    invalidate();
+  }, [activeChapter, invalidate]);
 
   // Global pointer tracking for subtle parallax even over foreground cards
   const windowPointerRef = useRef({ x: 0, y: 0 });
@@ -616,10 +554,10 @@ function SpatialWorldScene({
       }
     }
 
-    // Scroll-choreographed camera interpolation (horizon-aligned for vestibular comfort)
+    // Route-choreographed camera fly-through (horizon-aligned for vestibular comfort)
     smoothedChapterRef.current = prefersReducedMotion
-      ? scrollChapterRef.current
-      : THREE.MathUtils.damp(smoothedChapterRef.current, scrollChapterRef.current, 5.5, dt);
+      ? targetChapterRef.current
+      : THREE.MathUtils.damp(smoothedChapterRef.current, targetChapterRef.current, 4.4, dt);
 
     const ch = THREE.MathUtils.clamp(
       smoothedChapterRef.current,
@@ -707,26 +645,13 @@ function SpatialWorldScene({
         <TensorVolume shared={sharedRef} />
       </group>
 
-      {/* Chapter 1: SIH 2026 Autonomous Path-Planning & Collision-Avoidance */}
-      <AutonomousRoadScene
-        theme={theme}
-        obstacleSeed={obstacleSeed}
-        sensorView={sensorView}
-        isActive={isActive}
-        prefersReducedMotion={prefersReducedMotion}
-        position={isDesktop ? [1.4, -8.65, -0.35] : [0, -8.5, -1.1]}
-        scale={isDesktop ? 0.92 : 0.7}
-      />
-
-      {/* Chapter 2: Selected Work Architectural Monoliths */}
+      {/* Chapter 1: Projects — Architectural Monoliths & Orbital Data Rings */}
       <WorkMonoliths
         theme={theme}
         prefersReducedMotion={prefersReducedMotion}
         isActive={isActive}
         interactionRef={interactionRef}
       />
-
-      {/* Chapter 3: AI/ML Lab Orbital Data Rings */}
       <LabOrbitalRings
         theme={theme}
         prefersReducedMotion={prefersReducedMotion}
@@ -734,24 +659,35 @@ function SpatialWorldScene({
         interactionRef={interactionRef}
       />
 
-      {/* Chapter 4: Foundations Geometric Lattice */}
+      {/* Chapter 2: Hackathons — SIH 2026 Autonomous Path-Planning & Collision-Avoidance */}
+      <AutonomousRoadScene
+        theme={theme}
+        obstacleSeed={obstacleSeed}
+        sensorView={sensorView}
+        isActive={isActive}
+        prefersReducedMotion={prefersReducedMotion}
+        position={isDesktop ? [1.4, -24.0, -0.35] : [0, -23.85, -1.1]}
+        scale={isDesktop ? 0.92 : 0.7}
+      />
+
+      {/* Chapter 3: Research — Sculptural Lattice & Data Geometry */}
       <FoundationsLattice
         theme={theme}
         prefersReducedMotion={prefersReducedMotion}
       />
 
-      {/* Chapter 5: Chess.com Sculptural Board */}
+      {/* Chapter 4: Interests — 3D Ruy Lopez Chess Sculpture */}
       <ChessScene
         theme={theme}
         chessStep={chessStep}
         chessAngle={chessAngle}
         isActive={isActive}
         prefersReducedMotion={prefersReducedMotion}
-        position={isDesktop ? [1.45, -41.65, -0.35] : [0, -41.5, -1.0]}
+        position={isDesktop ? [1.45, -48.0, -0.35] : [0, -47.85, -1.0]}
         scale={isDesktop ? 0.94 : 0.72}
       />
 
-      {/* Chapter 6: Contact & LinkedIn Spatial Network Constellation */}
+      {/* Chapter 5: Contact — Spatial Network Constellation */}
       <ContactConstellation
         theme={theme}
         prefersReducedMotion={prefersReducedMotion}
@@ -764,6 +700,7 @@ function SpatialWorldScene({
 
 export function SpatialWorldCanvas({
   theme,
+  activeChapter,
   neuralMode,
   pulseSignal,
   obstacleSeed,
@@ -803,7 +740,7 @@ export function SpatialWorldCanvas({
       <Canvas
         dpr={[1, 2]}
         frameloop={frameloop}
-        camera={{ position: [0, 0, 5.4], fov: 42, near: 0.1, far: 60 }}
+        camera={{ position: [0, 0, 5.4], fov: 42, near: 0.1, far: 80 }}
         gl={{
           alpha: true,
           antialias: true,
@@ -819,6 +756,7 @@ export function SpatialWorldCanvas({
       >
         <SpatialWorldScene
           theme={theme}
+          activeChapter={activeChapter}
           neuralMode={neuralMode}
           pulseSignal={pulseSignal}
           obstacleSeed={obstacleSeed}

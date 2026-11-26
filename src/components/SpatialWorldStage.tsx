@@ -1,4 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { getRouteChapterIndex } from '../config/routes';
 import { useSpatialWorld } from '../context/useSpatialWorld';
 import { useTheme } from '../context/ThemeContext';
 import { isWebGLAvailable } from '../lib/webgl';
@@ -31,6 +33,8 @@ function AmbientFallbackBackdrop() {
 }
 
 export function SpatialWorldStage() {
+  const { pathname } = useLocation();
+  const activeChapter = getRouteChapterIndex(pathname);
   const { theme } = useTheme();
   const {
     neuralMode,
@@ -87,6 +91,7 @@ export function SpatialWorldStage() {
       <Suspense fallback={<AmbientFallbackBackdrop />}>
         <LazySpatialWorldCanvas
           theme={theme}
+          activeChapter={activeChapter}
           neuralMode={neuralMode}
           pulseSignal={pulseSignal}
           obstacleSeed={obstacleSeed}

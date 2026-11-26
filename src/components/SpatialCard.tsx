@@ -147,6 +147,20 @@ export function SpatialCard({
         }}
       />
 
+      {/* VisionOS gaze-style specular rim highlight */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+        style={{
+          padding: '1px',
+          background:
+            'radial-gradient(220px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--border-hairline-hover), transparent 70%)',
+          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          WebkitMaskComposite: 'xor',
+          maskComposite: 'exclude',
+        }}
+      />
+
       <div className="relative z-10 h-full">{children}</div>
     </motion.article>
   );

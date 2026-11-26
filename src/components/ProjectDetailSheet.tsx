@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowUpRight, GitFork, Globe, Star, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, GitFork, Globe, Star, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGitHub } from '../context/GitHubContext';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -13,6 +14,7 @@ import {
   productiveFastTransition,
   tapFeedback,
 } from '../lib/motion';
+import { playSpatialSwitch } from '../lib/spatialAudio';
 
 function GitHubMark({ className = '' }: { className?: string }) {
   return (
@@ -39,6 +41,7 @@ const CATEGORY_LABELS = {
 } as const;
 
 export function ProjectDetailSheet() {
+  const navigate = useNavigate();
   const { selectedRepo, setSelectedRepo, openArchiveWithFilter } = useGitHub();
   const { isDark } = useTheme();
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -228,6 +231,22 @@ export function ProjectDetailSheet() {
                       <span>Live Demo</span>
                     </motion.a>
                   ) : null}
+
+                  <motion.button
+                    type="button"
+                    onClick={() => {
+                      const targetSlug = encodeURIComponent(selectedRepo.name);
+                      setSelectedRepo(null);
+                      playSpatialSwitch();
+                      navigate(`/projects/${targetSlug}`);
+                    }}
+                    whileTap={tapFeedback}
+                    transition={productiveFastTransition}
+                    className="liquid-glass liquid-glass-interactive inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full px-4 text-sm font-medium text-ink"
+                  >
+                    <span>Open Full Case Study</span>
+                    <ArrowRight className="h-3.5 w-3.5 text-accent" aria-hidden="true" />
+                  </motion.button>
                 </div>
 
                 <button

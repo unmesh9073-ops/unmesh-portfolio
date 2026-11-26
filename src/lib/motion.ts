@@ -37,6 +37,13 @@ export const spatialSpring: Transition = {
   damping: 24,
 };
 
+export const spatialWindowTransition: Transition = {
+  type: 'spring',
+  stiffness: 240,
+  damping: 28,
+  mass: 0.85,
+};
+
 export const tapFeedback = {
   scale: 0.97,
 } as const;

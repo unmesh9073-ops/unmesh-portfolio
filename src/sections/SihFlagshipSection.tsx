@@ -4,6 +4,7 @@ import { SpatialCard } from '../components/SpatialCard';
 import { profileConfig } from '../config/profile.config';
 import { useSpatialWorld } from '../context/useSpatialWorld';
 import { productiveFastTransition, tapFeedback } from '../lib/motion';
+import { playSpatialTap } from '../lib/spatialAudio';
 
 export function SihFlagshipSection() {
   const { flagshipProject } = profileConfig;
@@ -100,7 +101,10 @@ export function SihFlagshipSection() {
               <div className="flex items-center gap-1">
                 <motion.button
                   type="button"
-                  onClick={injectObstacle}
+                  onClick={() => {
+                    playSpatialTap();
+                    injectObstacle();
+                  }}
                   whileTap={tapFeedback}
                   transition={productiveFastTransition}
                   className="btn-monochrome inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full px-3.5 text-xs font-medium tracking-[-0.01em]"
@@ -112,7 +116,10 @@ export function SihFlagshipSection() {
                 {activeInjected > 0 ? (
                   <motion.button
                     type="button"
-                    onClick={resetObstacles}
+                    onClick={() => {
+                      playSpatialTap();
+                      resetObstacles();
+                    }}
                     whileTap={tapFeedback}
                     transition={productiveFastTransition}
                     aria-label="Reset injected obstacles"
@@ -125,7 +132,10 @@ export function SihFlagshipSection() {
 
               <motion.button
                 type="button"
-                onClick={toggleSensorView}
+                onClick={() => {
+                  playSpatialTap();
+                  toggleSensorView();
+                }}
                 whileTap={tapFeedback}
                 transition={productiveFastTransition}
                 aria-pressed={sensorView}

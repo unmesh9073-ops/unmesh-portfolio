@@ -8,10 +8,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import {
-  BookOpen,
-  Briefcase,
   Compass,
-  Cpu,
   Crown,
   FlaskConical,
   FolderGit2,
@@ -22,7 +19,7 @@ import {
   Search,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { profileConfig } from '../config/profile.config';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useGitHub } from '../context/GitHubContext';
 import {
   PRODUCTIVE_EASE,
@@ -31,6 +28,7 @@ import {
   snappySpring,
 } from '../lib/motion';
 import { isApplePlatform } from '../lib/platform';
+import { playSpatialModal, playSpatialSwitch, playSpatialTap } from '../lib/spatialAudio';
 
 export interface FloatingDockProps {
   onOpenSpotlight: () => void;
@@ -39,6 +37,7 @@ export interface FloatingDockProps {
 
 interface DockEntry {
   id: string;
+  path?: string;
   label: string;
   tooltip: string;
   icon: LucideIcon;
@@ -133,7 +132,7 @@ function DockButton({
         transition={productiveFastTransition}
         tabIndex={receded ? -1 : 0}
         aria-label={item.tooltip}
-        aria-current={item.kind === 'nav' && isActive ? 'location' : undefined}
+        aria-current={item.kind === 'nav' && isActive ? 'page' : undefined}
         className={`relative flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-ink focus-visible:text-ink ${
           isActive ? 'text-ink' : ''
         }`}
@@ -159,15 +158,15 @@ function DockButton({
 }
 
 export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockProps) {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { openArchiveWithFilter } = useGitHub();
   const shouldReduceMotion = useReducedMotion();
   const isApple = useMemo(() => isApplePlatform(), []);
 
-  const [activeSection, setActiveSection] = useState<string>('top');
   const [fineDesktop, setFineDesktop] = useState(false);
-
-  const activeSectionRef = useRef('top');
   const mouseX = useMotionValue(Infinity);
+  const normalizedPath = pathname === '/' ? '/' : pathname.replace(/\/+$/, '');
 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
@@ -188,108 +187,70 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
   const canMagnify = fineDesktop && !shouldReduceMotion && !receded;
 
   const navItems = useMemo<DockEntry[]>(() => {
-    const scrollTo = (id: string) => {
-      if (id === 'top') {
-        window.scrollTo({
-          top: 0,
-          behavior: shouldReduceMotion ? 'auto' : 'smooth',
-        });
-        return;
-      }
-      const target = document.getElementById(id);
-      if (target) {
-        target.scrollIntoView({
-          behavior: shouldReduceMotion ? 'auto' : 'smooth',
-          block: 'start',
-        });
+    const go = (path: string) => {
+      if (normalizedPath !== path) {
+        playSpatialSwitch();
+        navigate(path);
       }
     };
 
-    const items: DockEntry[] = [
+    return [
       {
-        id: 'top',
+        id: 'overview',
+        path: '/',
         label: 'Overview',
         tooltip: 'Overview',
         icon: Compass,
         kind: 'nav',
-        onActivate: () => scrollTo('top'),
+        onActivate: () => go('/'),
       },
       {
-        id: 'sih',
-        label: 'SIH 2026',
-        tooltip: 'SIH 2026 · PS #37',
-        icon: Route,
-        kind: 'nav',
-        onActivate: () => scrollTo('sih'),
-      },
-      {
-        id: 'work',
-        label: 'Work',
-        tooltip: 'Work',
+        id: 'projects',
+        path: '/projects',
+        label: 'Projects',
+        tooltip: 'Projects',
         icon: Layers,
         kind: 'nav',
-        onActivate: () => scrollTo('work'),
+        onActivate: () => go('/projects'),
       },
       {
-        id: 'lab',
-        label: 'Lab',
-        tooltip: 'AI/ML Lab',
+        id: 'hackathons',
+        path: '/hackathons',
+        label: 'Hackathons',
+        tooltip: 'Hackathons · SIH 2026',
+        icon: Route,
+        kind: 'nav',
+        onActivate: () => go('/hackathons'),
+      },
+      {
+        id: 'research',
+        path: '/research',
+        label: 'Research',
+        tooltip: 'Research · WorldQuant & Lab',
         icon: FlaskConical,
         kind: 'nav',
-        onActivate: () => scrollTo('lab'),
+        onActivate: () => go('/research'),
       },
       {
-        id: 'foundations',
-        label: 'Foundations',
-        tooltip: 'Foundations',
-        icon: Cpu,
-        kind: 'nav',
-        hideOnCompactMobile: true,
-        onActivate: () => scrollTo('foundations'),
-      },
-      {
-        id: 'chess',
-        label: 'Chess',
-        tooltip: 'Chess & Tactics',
+        id: 'interests',
+        path: '/interests',
+        label: 'Interests',
+        tooltip: 'Interests · Chess',
         icon: Crown,
         kind: 'nav',
-        onActivate: () => scrollTo('chess'),
+        onActivate: () => go('/interests'),
+      },
+      {
+        id: 'contact',
+        path: '/contact',
+        label: 'Contact',
+        tooltip: 'Contact',
+        icon: Mail,
+        kind: 'nav',
+        onActivate: () => go('/contact'),
       },
     ];
-
-    if (profileConfig.modules.showExperience) {
-      items.push({
-        id: 'experience',
-        label: 'Experience',
-        tooltip: 'Experience',
-        icon: Briefcase,
-        kind: 'nav',
-        onActivate: () => scrollTo('experience'),
-      });
-    }
-
-    if (profileConfig.modules.showResearchNotes) {
-      items.push({
-        id: 'notes',
-        label: 'Notes',
-        tooltip: 'Notes',
-        icon: BookOpen,
-        kind: 'nav',
-        onActivate: () => scrollTo('notes'),
-      });
-    }
-
-    items.push({
-      id: 'contact',
-      label: 'Contact',
-      tooltip: 'Contact',
-      icon: Mail,
-      kind: 'nav',
-      onActivate: () => scrollTo('contact'),
-    });
-
-    return items;
-  }, [shouldReduceMotion]);
+  }, [navigate, normalizedPath]);
 
   const utilityItems = useMemo<DockEntry[]>(
     () => [
@@ -300,7 +261,10 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
         icon: FolderGit2,
         kind: 'action',
         hideOnCompactMobile: true,
-        onActivate: () => openArchiveWithFilter(''),
+        onActivate: () => {
+          playSpatialTap();
+          openArchiveWithFilter('');
+        },
       },
       {
         id: 'spotlight',
@@ -308,113 +272,18 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
         tooltip: isApple ? 'Spotlight · ⌘K' : 'Spotlight · Ctrl K',
         icon: Search,
         kind: 'action',
-        onActivate: onOpenSpotlight,
+        onActivate: () => {
+          playSpatialModal(true);
+          onOpenSpotlight();
+        },
       },
     ],
     [openArchiveWithFilter, onOpenSpotlight, isApple],
   );
 
-  const navIds = useMemo(() => navItems.map((item) => item.id), [navItems]);
-
-  // Track active section cleanly via IntersectionObserver with minimal state updates
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') {
-      return;
-    }
-
-    const ratios = new Map<string, number>();
-    const elements = navIds
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-
-    if (elements.length === 0) return;
-
-    const commitActive = (nextId: string) => {
-      if (nextId !== activeSectionRef.current) {
-        activeSectionRef.current = nextId;
-        setActiveSection(nextId);
-      }
-    };
-
-    const resolveActiveSection = () => {
-      if (window.scrollY < 72) {
-        commitActive('top');
-        return;
-      }
-
-      const nearBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 40;
-      if (nearBottom) {
-        commitActive('contact');
-        return;
-      }
-
-      let bestId = '';
-      let bestRatio = 0;
-      for (const id of navIds) {
-        const ratio = ratios.get(id) ?? 0;
-        if (ratio > bestRatio) {
-          bestRatio = ratio;
-          bestId = id;
-        }
-      }
-
-      if (bestId) {
-        commitActive(bestId);
-      }
-    };
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          ratios.set(
-            entry.target.id,
-            entry.isIntersecting ? entry.intersectionRatio : 0,
-          );
-        }
-        resolveActiveSection();
-      },
-      {
-        rootMargin: '-22% 0px -38% 0px',
-        threshold: [0, 0.15, 0.35, 0.6, 0.9],
-      },
-    );
-
-    for (const el of elements) {
-      observer.observe(el);
-    }
-
-    let rafId: number | null = null;
-    const handleScrollBoundary = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = null;
-        if (window.scrollY < 72) {
-          commitActive('top');
-        } else if (
-          window.innerHeight + window.scrollY >=
-          document.documentElement.scrollHeight - 40
-        ) {
-          commitActive('contact');
-        }
-      });
-    };
-
-    window.addEventListener('scroll', handleScrollBoundary, { passive: true });
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', handleScrollBoundary);
-      if (rafId !== null) window.cancelAnimationFrame(rafId);
-    };
-  }, [navIds]);
-
   return (
     <div
-      className={`fixed inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-40 flex justify-center px-3 ${
-        receded ? 'pointer-events-none' : 'pointer-events-none'
-      }`}
+      className="pointer-events-none fixed inset-x-0 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-40 flex justify-center px-3"
       aria-hidden={receded}
     >
       <motion.nav
@@ -444,7 +313,7 @@ export function FloatingDock({ onOpenSpotlight, receded = false }: FloatingDockP
             <DockButton
               key={item.id}
               item={item}
-              isActive={activeSection === item.id}
+              isActive={normalizedPath === item.path}
               canMagnify={canMagnify}
               mouseX={mouseX}
               receded={receded}
